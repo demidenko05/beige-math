@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!--<script type="text/javascript" src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/navbar-top.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark sidebar bg-dark mb-4">
+      <div class="container-fluid">
+        <a href="index.html" class="navbar-brand navbar-brand-img"><img src="img/logo.png"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Articles</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="svmsimple.html">Understanding Support Vector Machines.</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="license-bsmath.html">Beigesoft™ Math License</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+              <a class="nav-link" href="https://demidenko05.github.io/beige-acc/">Beigesoft™ main site</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+    
+    <div>
+      <h3>Understanding Support Vector Machines. Step 1. From points to vectors. Make this with your eyes.</h3>
+      
+      <p><b>Keywords: Support vector machines.</b></p>
+      
+      <p><i>* In different sources vectors are described in slightly different notations, e.g. a vector is named with just bold lower case letter, see references.</i></p>
+      
+      <h4>Hyperplane. From points to vectors.</h4>
+      <p>Hyperplane is a linear function described with this vector equation:</p>
+      <p>
+      \begin{align}
+        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = 0
+      \end{align}
+      </p>
+      <p>Where \(\vec{\mathbf{X}}\) is a data vector (e.g. points from origin (0,0)) in <b>N-dimention</b>.
+      \(\vec{\mathbf{W}}\) is a coefficient vector. So, this is Dot-product of two vectors, i.e. for <b>N-dimention</b> this is:</p>
+      <p>
+      <p>
+      \begin{align}
+        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = x1w1 + x2w2 + ... +xnwn
+      \end{align}
+      </p>
+      </p>
+      <p>For 2-D Hyperplane this is: <b>x1w1 + x2w2 = 0</b>, and this is equals <b>x1w1/w1 + x2w2/w1 = 0</b>,
+      i.e. let <b>w1=1</b> whatever, and we got simple equation: <b>x1 + x2w2 = 0</b>, i.e. <b>x2 = -x1/w2</b></p>
+      <p>For standard geometry notation in dots this equation is a line function that goes through origin: <b>y = ax</b>, where <b>a = -1/w2</b> in this case.</p>
+      <p>For 3D this is a plane that also goes trough origin (<a href="#mitMVC1">see MIT-MVC1</a>)</p>
+      
+      <p>To shift a function along the last axis, you should just add a shifting constant <b>b</b> (<a href="#precalcShift">see PRECALC-SHIFT</a>), and so does for a Hyperplane(line, plane, etc.).
+        So, shifted Hyperplane equation is:</p>
+      <p>
+      \begin{align}
+        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} + b = 0
+      \end{align}
+      </p>
+      
+      <p>Dot product of two vectors is also:</p>
+      <p>
+      \begin{align}
+        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = \| \vec{\mathbf{X}} \| \| \vec{\mathbf{W}} \| cos \varTheta
+      \end{align}
+      </p>
+      <p>This means that a non-shifted Hyperplane's vectors in dot product are perpendicular to each other, i.e. \(cos \varTheta = 0 ⇒ \varTheta = 90^o\).
+        That is \(\vec{\mathbf{W}}\) is normal to \(\vec{\mathbf{X}}\).
+      </p>
+      <p>Consider the simplest example - Hyperplane in 2D <b>y=-x</b>, that is <b>x2=-x1/w2</b>, that is <b>{x1,x2}*{1,1}=0</b>.
+        Any point is also a vector from the origin, so lets draw this hyperplane plus its shifted by 4 clone, plus a point A on this Hyperplane for x1(or x)= 1, so x2( or y) = -1.
+        Vector \(\vec{\mathbf{OA}}\) from origin to A, and normal \(\vec{\mathbf{W}}\) from that point A:
+      </p>
+      <p align="center"><img style="max-width: 100%" src="img/hyperplane.png" /></p>
+      <p>
+        References:
+      </p>
+      <ol>
+        <li>Precalculus. Carl Stitz, Ph.D. Jeff Zeager, Ph.D. Lakeland Community College Lorain County Community College July 4, 2013.
+          <ol>
+            <li><a name="precalcShift"></a>page 121, 1.7 Transformations, Theorem 1.2. Vertical Shifts.</li>
+            <li><a name="precalcVec"></a>page 1012, 11.8 Vectors</li>
+          </ol>
+        </li>
+        <li><a href="https://ocw.mit.edu/courses/mathematics/18-02-multivariable-calculus-fall-2007/">MIT  18.02 Multivariable Calculus Fall 2007 by Prof. Denis Auroux (video lectures).</a>
+          <ol>
+            <li><a name="mitMVC1"></a>Lecture #1 - vectors, dot product, 3D plane through origin with normal vector</li>
+          </ol>
+        </li>
+      </ol>
+
+    </div>
+
+    <footer class="blog-footer">
+      Copyright &#169; 2021 <a href="https://demidenko05.github.io/beige-math/">Beigesoft™</a> All rights reserved.      
+    </footer>
+
+    </main>
+
+  </body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/navbar-top.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark sidebar bg-dark mb-4">
+      <div class="container-fluid">
+        <a href="index.html" class="navbar-brand navbar-brand-img"><img src="img/logo.png"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Articles</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="svmidx.html">Understanding Support Vector Machines.</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="license-bsmath.html">Beigesoft™ Math License</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+              <a class="nav-link" href="https://demidenko05.github.io/beige-acc/">Beigesoft™ main site</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+    
+    <div>
+      <h2>Beigesoft™ Math projects overview.</h2>
+      
+      <p><b>Keywords: Python for science, PyNum, PySci, Support vector machines.</b></p>
+      
+      
+      <h3>Английский как основной язык наук.</h3>
+      <p>Английский язык давно уже стал интернациональным языком для наук.
+        И все это несмотря на то что многие слова на Английском имеют несколько значений, причем неродственных, и даже противоположных,
+        а научный доклад у них зовется довольно весело - paper.
+        Отечественная медицина позаимствовала много терминов с Английского, например - сенсибилизация, локализованный, синус лифтинг...
+        Ученые и инженеры переводят и публикуют свои работы с родного на Английский язык.
+        Первая статья "Support vector machines" посвящена работе, автором которой является Владимир Вапник.
+        Русско-язычных существенных источников по данной работе не наблюдается.
+        Поэтому нет смысла писать статьи на Русском, тем более что все ссылки на англоязычные источники.
+      </p>
+
+      <h3>Why Python (exactly NumPy, SciPy, etc.) seems to be the best math and science tool.</h3>
+      <p>Many scientists and engineers chose Java because of its ability of publishing programs as WEB-applets.
+        Java is faster and definitely more rigorous than Python, and it also allows to invoke C/C++ libs via JNI.
+        But the most scientists and engineers have chosen Python.
+        The reason probably is the ability to run commands in its shell. All scientist tools have a shell interpreter (Matlab, Octavia, Scilab, etc).
+        But the truth is that many main units in SCI-Python libs are made with C (e.g. see on GitHub percent of C code in NymPy and SciPy).
+        So, if you want to contribute, then you should use C for a code that requires a lot of computation, and you should use a good abstraction to make and use different implementations, i.e. from a generic one to architecture dependent ones (e.g. via SSE, GPU, etc.).
+        Besides you should code Python in more type-explicit way, e.g. denote floats with a dot, i.e. use <b>1.</b> instead of <b>1</b> in math expressions, scalars vars starts with lowercase letter, vectors and matrices with uppercase one.
+        You also should be aware about Python's things that make your life really not easy, for example:
+<pre style="white-space: pre-wrap;">
+#Python2:
+&gt;&gt;&gt; 3 / 2
+1
+&gt;&gt;&gt; 3. / 2.
+1.5
+&gt;&gt;&gt; 3 // 2
+1
+&gt;&gt;&gt; 3.0 // 2.0
+1.0
+#Python3:
+&gt;&gt;&gt; 3 / 2
+1.5
+&gt;&gt;&gt; 3. / 2.
+1.5
+&gt;&gt;&gt; 3 // 2
+1
+&gt;&gt;&gt; 3.0 // 2.0
+1.0
+</pre>
+        In this example, in contrast to Python2, Python3 acts in an ambiguous way, i.e. it treats <b>3 / 2</b> as floats instead of integers,
+        so you must use exactly <b>//</b> for integers.
+      </p>
+
+      <h3><a href="svmidx.html">Understanding Support Vector Machines.</a></h3>
+      <p>This project is intended to understand, explain and try step by step SVM method for classifying (recognizing) and regressing (prediction) tasks.
+        Many details are explained, e.g. what is Hyperplane and its shifting.
+      </p>
+    </div>
+
+    <footer class="blog-footer">
+      Copyright &#169; 2021 <a href="https://demidenko05.github.io/beige-math/">Beigesoft™</a> All rights reserved.      
+    </footer>
+
+    </main>
+
+  </body>
+
+</html>
