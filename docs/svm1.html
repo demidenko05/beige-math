@@ -52,19 +52,21 @@
       
       <p><i>* In different sources vectors are described in slightly different notations, e.g. a vector is named with just bold lower case letter, see references.</i></p>
       
+      <p>First, you should better watch <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/">MIT 6.034 Fall 2010 Artificial Intelligence by Prof. Patrick Henry Winston, Lecture 16: Learning: Support Vector Machines.</a></p>
+      
       <h4>Hyperplane. From points to vectors.</h4>
       <p>Hyperplane is a linear function described with this vector equation:</p>
       <p>
       \begin{align}
-        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = 0
+        \overrightarrow{X} \cdot \overrightarrow{W} = 0
       \end{align}
       </p>
-      <p>Where \(\vec{\mathbf{X}}\) is a data vector (e.g. points from origin (0,0)) in <b>N-dimention</b>.
-      \(\vec{\mathbf{W}}\) is a coefficient vector. So, this is Dot-product of two vectors, i.e. for <b>N-dimention</b> this is:</p>
+      <p>Where \(\overrightarrow{X}\) is a data vector (e.g. points from origin (0,0)) in <b>N-dimention</b>.
+      \(\overrightarrow{W}\) is a coefficient vector. So, this is Dot-product of two vectors, i.e. for <b>N-dimention</b> this is:</p>
       <p>
       <p>
       \begin{align}
-        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = x1w1 + x2w2 + ... +xnwn
+        \overrightarrow{X} \cdot \overrightarrow{W} = x1w1 + x2w2 + ... +xnwn
       \end{align}
       </p>
       </p>
@@ -77,24 +79,53 @@
         So, shifted Hyperplane equation is:</p>
       <p>
       \begin{align}
-        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} + b = 0
+        \overrightarrow{X} \cdot \overrightarrow{W} + b = 0
       \end{align}
       </p>
       
       <p>Dot product of two vectors is also:</p>
       <p>
       \begin{align}
-        \vec{\mathbf{X}} \cdot \vec{\mathbf{W}} = \| \vec{\mathbf{X}} \| \| \vec{\mathbf{W}} \| cos \varTheta
+        \overrightarrow{X} \cdot \overrightarrow{W} = \| \overrightarrow{X} \| \| \overrightarrow{W} \| cos \varTheta
       \end{align}
       </p>
       <p>This means that a non-shifted Hyperplane's vectors in dot product are perpendicular to each other, i.e. \(cos \varTheta = 0 ⇒ \varTheta = 90^o\).
-        That is \(\vec{\mathbf{W}}\) is normal to \(\vec{\mathbf{X}}\).
+        That is \(\overrightarrow{W}\) is normal to \(\overrightarrow{X}\).
       </p>
       <p>Consider the simplest example - Hyperplane in 2D <b>y=-x</b>, that is <b>x2=-x1/w2</b>, that is <b>{x1,x2}*{1,1}=0</b>.
         Any point is also a vector from the origin, so lets draw this hyperplane plus its shifted by 4 clone, plus a point A on this Hyperplane for x1(or x)= 1, so x2( or y) = -1.
-        Vector \(\vec{\mathbf{OA}}\) from origin to A, and normal \(\vec{\mathbf{W}}\) from that point A:
+        Vector \(\overrightarrow{OA}\) from origin to A, and normal \(\overrightarrow{W}\) from that point A:
       </p>
       <p align="center"><img style="max-width: 100%" src="img/hyperplane.png" /></p>
+      <p>As you can see  \(\overrightarrow{W}\) is normal to this hyperplane with any shifting.</p>
+      
+      <h4>A SVM simplest example. Make it with your eyes.</h4>
+      <p>
+        Consider 4 samples in 2D - X1(0.5, 1.2), X2(1, 1) belong to class 1 (green) and X3(3, 3), X4(4, 3.3) belong to class 2 (blue):
+      </p>
+      <p align="center"><img style="max-width: 100%" src="img/svmsimple1.png" /></p>
+      <p>You can find the separating hyperplane and the support vectors (the "widest road") by your eyes.
+        The hyperplane is the same as in the previous chapter, i.e. coefficient vector \(\overrightarrow{W} = \langle 1, 1 \rangle \) and shifting <b>b=-4</b>.
+        Magnitude \(\|\overrightarrow{W}\|\) is half of the margin between support vectors in this case (1.4142).
+      </p>
+      <p>
+      Lets check these conditions:
+      \begin{align}
+        \overrightarrow{X_i} \cdot \overrightarrow{W} + b  \geq +1 \mbox{ for } y_i = +1 \mbox{ (class 2)}
+      \end{align}
+      \begin{align}
+        \overrightarrow{X_i} \cdot \overrightarrow{W} + b  \leq -1 \mbox{ for } y_i = -1 \mbox{ (class 1)}
+      \end{align}
+      </p>
+      <p>
+        <ul>
+          <li>X1\(\langle 0.5, 1.2 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2.3</li>
+          <li>X2\(\langle 1, 1 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2</li>
+          <li>X3\(\langle 3, 3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 2</li>
+          <li>X3\(\langle 4, 3.3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 3.3</li>
+        </ul>
+      </p>
+
       <p>
         References:
       </p>
