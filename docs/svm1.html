@@ -46,7 +46,7 @@
     <main class="container">
     
     <div>
-      <h3>Understanding Support Vector Machines. Step 1. From points to vectors. Make this with your eyes.</h3>
+      <h3>Understanding Support Vector Machines. Step 1. From points to vectors. Make this with your eyes. Make this by calculator.</h3>
       
       <p><b>Keywords: Support vector machines.</b></p>
       
@@ -71,7 +71,7 @@
       </p>
       </p>
       <p>For 2-D Hyperplane this is: <b>x1w1 + x2w2 = 0</b>, and this is equals <b>x1w1/w1 + x2w2/w1 = 0</b>,
-      i.e. let <b>w1=1</b> whatever, and we got simple equation: <b>x1 + x2w2 = 0</b>, i.e. <b>x2 = -x1/w2</b></p>
+      i.e. let <b>w1=1</b>, and we got simple equation: <b>x1 + x2w2 = 0</b>, i.e. <b>x2 = -x1/w2</b></p>
       <p>For standard geometry notation in dots this equation is a line function that goes through origin: <b>y = ax</b>, where <b>a = -1/w2</b> in this case.</p>
       <p>For 3D this is a plane that also goes trough origin (<a href="#mitMVC1">see MIT-MVC1</a>)</p>
       
@@ -98,6 +98,13 @@
       </p>
       <p align="center"><img style="max-width: 100%" src="img/hyperplane.png" /></p>
       <p>As you can see  \(\overrightarrow{W}\) is normal to this hyperplane with any shifting.</p>
+      <p>Now you should understand that any linear function (hyperplane) can be described as a coefficient vector \(\overrightarrow{W}\) and shifting constant <b></b>.
+        And you must describe it with a normalized coefficient vector \(\overrightarrow{W}\) with values from <b>-1</b> to <b>1</b>.
+        For example <b>y=2x</b> (\(\overrightarrow{W}=\langle 2, 1 \rangle \)) equals to <b>1/2y=x</b> (i.e. \(\overrightarrow{W}=\langle 1, 1/2 \rangle \)).
+        So lets draw set of 2D functions: \(\overrightarrow{W1}=\langle 1, 0 \rangle \), \(\overrightarrow{W2}=\langle 1, 1 \rangle \)
+        , \(\overrightarrow{W3}=\langle 0, 1 \rangle \), \(\overrightarrow{W4}=\langle -1, 1 \rangle \) with no shifting (b=0) and <b>b=-4</b>:
+      </p>
+      <p align="center"><img style="max-width: 100%" src="img/coefvec1.png" /></p>
       
       <h4>A SVM simplest example. Make it with your eyes.</h4>
       <p>
@@ -122,9 +129,29 @@
           <li>X1\(\langle 0.5, 1.2 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2.3</li>
           <li>X2\(\langle 1, 1 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2</li>
           <li>X3\(\langle 3, 3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 2</li>
-          <li>X3\(\langle 4, 3.3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 3.3</li>
+          <li>X4\(\langle 4, 3.3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 3.3</li>
         </ul>
       </p>
+      <p>Here we little bit get into troubles. First, support vectors must have <b>bH1=b+1=-3 and bH2=b-1=-5</b>, but we get <b>bH1=b+2=-2 and bH2=b-2=-6</b>.
+        Second, the margin must be \(2\over\|\overrightarrow{W}\|\), there 2 is difference between <b>bH2 and bH1</b>, that must be <b>2</b> according to all sources.
+      </p>
+      <p>But if we push X2 and X3 farther by {+2,+2}, then the margin will be \(4*\|\overrightarrow{W}\|\) in this case.</p>
+      <p>Lets check \(-b\over\|\overrightarrow{W}\|\): <b>4 / 1.414213562 = 2.828427125</b>. Check it by Pythagorean Theorem: <b>sqrt(2*2+2*2)=2.828427125</b>.
+        So, dividing a <b>b</b> (or part of it) on \(\|\overrightarrow{W}\|\) gives us length of hypotenuse.
+        So, margin is actually equals to \-(bH2-bH1)\over\|\overrightarrow{W}\|\), i.e. margin here = <b>-(-6 + 2) / 1.414213562 = 2.828427125</b>, and it closes to \(2*\|\overrightarrow{W}\|=2.828427124\) 
+      </p>
+      
+      <h4>Make this by calculator.</h4>
+      <p>
+        Right now we should realize how to find separating hyperplane: just try different \(\overrightarrow{W}\) for every sample(point), compute \(b_i\) for them,
+        for every point of class 1 and class 2 compute \(margin_{ij}\) and choose the minimum, compare chosen margins for each \(\overrightarrow{W}\) and find the maximum,
+        finally for maximum margin's <b>bH1 and bH2</b> compute <b>b = bH2 - (bH2-bH1)/2</b>.
+      </p>
+      <p>Let's try 3 coefficient vectors: \(\overrightarrow{W1}=\langle 1, 0 \rangle \), \(\overrightarrow{W2}=\langle 1, 1 \rangle \), \(\overrightarrow{W3}=\langle 0, 1 \rangle \):
+      </p>
+      <p align="center"><img style="max-width: 100%" src="img/calc.png" /></p>
+      <p>See <b>src/python/svm/calc.py</b> that made this actually very simple job.</p>
+
 
       <p>
         References:

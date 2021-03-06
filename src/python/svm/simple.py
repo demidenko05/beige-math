@@ -18,7 +18,7 @@ MRKS = ['^', 'o']
 CLRS = ['green', 'blue']
 fig, ax = plt.subplots()
 for i in range(X.shape[0]):
-  ax.scatter(X[i-1][0], X[i-1][1], marker=MRKS[Y[i-1]], c=CLRS[Y[i-1]])
+  ax.scatter(X[i][0], X[i][1], marker=MRKS[Y[i]], c=CLRS[Y[i]])
 #Hyperplane HP y=-x+4 (x2=-x1+4) -> x1 + x2 -4 = 0 -> W*X+b=0 -> [1,1]*X -4=0, W=[1,1] WX=0 is Hyperplane through origin, b is shifting along the last axis (X2 here)
 bHP = 4.0
 ax.plot([0., bHP], [bHP, 0.], c='black', linewidth=1)
