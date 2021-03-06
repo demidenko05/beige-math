@@ -45,7 +45,7 @@ def prnHp(pAx, pX, pY, pW, pSz, pLn):
     if pY[i] == 0:
       for j in range(pSz):
         if i != j and pY[j] == 1:
-          marg = - (B[j] - B[i]) / magW
+          marg = (- B[j] + B[i]) / magW
           if marg < MARGB12[0]:
             MARGB12[0] = marg
             MARGB12[1] = B[i]
