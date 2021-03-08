@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!--<script type="text/javascript" src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/navbar-top.css" rel="stylesheet">
   </head>
@@ -43,13 +46,34 @@
     <main class="container">
     
     <div>
-      <h2>Understanding Support Vector Machines. Articles.</h2>
+      <h3>Using SVM for image recognition.</h3>
       
-      <p><b>Keywords: Support vector machines.</b></p>
+      <p><b>Keywords: Support vector machines, image recognition.</b></p>
       
-      <h5><a href="svm1.html">From points to vectors. Make this with your eyes. Make this by calculator.</a></h5>
+      <p>How to separate samples if they can not be separated by a hyperplane (point in 1D, line in 2D, plane in 3D, etc.)?
+        See MIT6_034F10_tutor05.pdf in <a href="#mitAI2010F">MIT-AI2010F</a>
+        how to separate 2D points where class 1 more far from origin than class 2,
+        that is any point is also a vector from origin, so their lengths (magnitudes) are separable.
+        So instead of given vectors 2D, you should use vectors in 1D - their lengths. Decision equation in 2D is circle:
+      \begin{align}
+        x1^2 + x2^2 + b  &lt; 0 \mbox{ for class 1}
+      \end{align}
+      \begin{align}
+        x1^2 + x2^2 + b  \geq 0 \mbox{ for class 2}
+      \end{align}
+        But in transformed 1D the decision equation is SVM's: \(\overrightarrow{\Phi(X)} \cdot \overrightarrow{W} + b  &lt; 0 \mbox{ for class 1}\).
+        And so does for any dimension where samples can be separated by <b>radius</b>, i.e. a sphere in 3D - just center samples (if origin is not in the center) and use their magnitudes (1D radiuses).
+      </p>
+      <p>But what about images, e.g. letters? Black pixels - class 2, white - class 1, how to make them separable by hyperplane?
+        If you just add a new dimension different from classes, e.g. <b>x3 = 2</b> for class 1 and <b>x3 = 4</b> for class 2,
+        then it will be separable visibly, but not separable by SVM method.</p>
 
-      <h5><a href="svm2dimgrec.html">Using SVM for image recognition.</a></h5>
+      <p>
+        References:
+      </p>
+      <ol>
+        <li><a name="mitAI2010F"></a><a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/">MIT 6.034 Fall 2010 Artificial Intelligence by Prof. Patrick Henry Winston, Lecture 16: Learning: Support Vector Machines.</a></li>
+      </ol>
 
     </div>
 
