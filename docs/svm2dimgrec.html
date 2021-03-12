@@ -129,7 +129,7 @@ Accuracy = 100% (1/1) (classification)
         b = -K(\overrightarrow{X}, \overrightarrow{W})
       \end{align}
       For decision points in the example X4cl1(2,2) and X5cl2(-3,-3): <b>bH4=-2*sqrt(8)*1=-5.656854249</b>, <b>bH5=-2*sqrt(18)=-8.485281374</b>.
-      That is (b = bH2 - (bH2-bH1)/2) -> <b>b=-8.485281374 - (-8.485281374+5.656854249)/2= -8.485281374 + 2.828427125/2 = -7.071067811</b>. That is, it different from -5 in the example.
+      That is (b = bH2 - (bH2-bH1)/2) -> <b>b=-8.485281374 - (-8.485281374+5.656854249)/2= -8.485281374 + 2.828427125/2 = -7.071067811</b>. That is, it's different from -5 in the example.
       </p>
       <p>Lets try classification for this MIT example with <b>b=-7.071067811</b> and W={0, 1}, so for X(-2,-2) -> <b>2*sqrt(8)*1 - 7.071067811 = -1.414213562, i.e. class 1</b>,
        and for X(-2,-3) -> <b>2*sqrt(13)*1 - 7.071067811 = 0.14003474, i.e. class 2</b>. That is it works.
