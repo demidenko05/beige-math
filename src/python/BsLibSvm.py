@@ -51,20 +51,20 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
   # find minimal margin, bH1, bH2, i1, i2, countWrong:
   MARGB12 = np.zeros(6)
   #1. compute all b[i] and data for wrong data decision:
-  idxNeg = 0
-  idxPos = 1
   bMinMax = np.zeros (8)
-  bMinMax[0] = 99999999999.99
-  bMinMax[1] = -99999999999.99
-  bMinMax[2] = 99999999999.99
-  bMinMax[3] = -99999999999.99
+  bMin = -99999999999.99
+  bMax = 99999999999.99
+  bMinMax[0] = bMax
+  bMinMax[1] = bMin
+  bMinMax[2] = bMax
+  bMinMax[3] = bMin
   sz = pYARR.shape[0]
   B = np.zeros (sz)
   for i in range (sz):
     #for 2D: x1w1 + x2w2 + b = 0 -> b = -x1w1 -x2w2
     #here b = -K(X,W)
     B[i] = - pKernel (pXARR[i], pWVEC)
-    if pYARR[i] == pYNEGPOS[idxNeg]:
+    if pYARR[i] == pYNEGPOS[0]:
       if B[i] < bMinMax[0]:
         bMinMax[0] = B[i]
         MARGB12[1] = B[i]
@@ -83,14 +83,65 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
         MARGB12[2] = B[i]
         MARGB12[4] = i
 
-#  print('MINMAX: ', bMinMax)
-
   #if there is a wrong sample/s then fix mini-maxes:
   if ( bMinMax[0] >= bMinMax[2] and bMinMax[0] <= bMinMax[3] ) or ( bMinMax[1] >= bMinMax[2] and bMinMax[1] <= bMinMax[3] ) or ( bMinMax[2] >= bMinMax[0] and bMinMax[2] <= bMinMax[1] ) or ( bMinMax[3] >= bMinMax[0] and bMinMax[3] <= bMinMax[1] ):
-    print('MINMAX: ', bMinMax)
-    if bMinMax[0] < bMinMax[2]:
+    #print('MINMAX: ', bMinMax)
+    idxNeg = 0
+    idxPos = 1
+    midNeg = bMinMax[0] + (bMinMax[1] - bMinMax[0]) / 2.
+    midPos = bMinMax[2] + (bMinMax[3] - bMinMax[2]) / 2.
+    isInverse = 0
+    if midNeg < midPos:
+      isInverse = 1
+    if isInverse == 1:
+      MARGB12[1] = bMinMax[4]
+      MARGB12[2] = bMinMax[6]
+      MARGB12[3] = bMinMax[5]
+      MARGB12[4] = bMinMax[7]
       idxNeg = 1
       idxPos = 0
+      bmm = bMinMax[0]
+      bMinMax[0] = bMinMax[2]
+      bMinMax[2] = bmm
+      bmm = bMinMax[1]
+      bMinMax[1] = bMinMax[3]
+      bMinMax[3] = bmm
+      #print('MINMAXc: ', bMinMax)
+    brdr = bMin
+    if bMinMax[2] == bMinMax[3]:
+      #dot 1 inside region 0
+      bMinMax[0] = bMax
+      brdr = bMinMax[3]
+    elif bMinMax[0] == bMinMax[1]:
+      #dot 0 inside region 1
+      bMinMax[2] = bMin
+      brdr = bMinMax[0]
+    elif bMinMax[3] - bMinMax[2] > bMinMax[1] - bMinMax[0]:
+      #region 1 inside region 0
+      bMinMax[2] = bMin
+      brdr = bMinMax[0]
+    else:
+      #region 0 inside region 1
+      bMinMax[0] = bMax
+      brdr = bMinMax[3]
+    if bMinMax[0] == bMax:
+      for i in range (sz):
+        if pYARR[i] == pYNEGPOS[idxNeg]:
+          if B[i] <= brdr:
+            MARGB12[5] += 1
+          elif B[i] < bMinMax[0]:
+            bMinMax[0] = B[i]
+            MARGB12[1] = B[i]
+            MARGB12[3] = i
+    elif bMinMax[2] == bMin:
+      for i in range (sz):
+        if pYARR[i] == pYNEGPOS[idxPos]:
+          if B[i] >= brdr:
+            MARGB12[5] += 1
+          elif B[i] > bMinMax[2]:
+            bMinMax[2] = B[i]
+            MARGB12[2] = B[i]
+            MARGB12[4] = i
   elif bMinMax[0] < bMinMax[2]:
     MARGB12[1] = bMinMax[4]
     MARGB12[2] = bMinMax[6]
@@ -120,8 +171,14 @@ def bsSvmLinKern (pVEC1, pVEC2):
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
 #pYNEGPOS - array(2) 0 - negative Y, 1 - positive Y
 def bsSvmInverseY (pYARR, pYNEGPOS):
+  yn = pYNEGPOS[0]
+  yp = 1
   for i in range (pYARR.shape[0]):
-    if pYARR[i] == pYNEGPOS[0]:
-      pYARR[i] = pYNEGPOS[1]
+    if pYARR[i] != yn:
+      yp = pYARR[i]
+      break
+  for i in range (pYARR.shape[0]):
+    if pYARR[i] == yn:
+      pYARR[i] = yp
     else:
-      pYARR[i] = pYNEGPOS[0]
+      pYARR[i] = yn
