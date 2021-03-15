@@ -17,26 +17,32 @@ Y = np.array ([0, 0, 1, 1])
 W = np.array ([1., 0.])
 Wm = W.copy ()
 YNEGPOS = bsSvmCheckData (X, Y, W, bsSvmLinKern)
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
-if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or MARGB12[3] != 1.0 or MARGB12[4] != 2.0:
-  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2: ', MARGB12[0], MARGB12[1], MARGB12[2], MARGB12[3], MARGB12[4])
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or i1 != 1 or i2 != 2:
+  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2: ', MARGB12[0], MARGB12[1], MARGB12[2], i1, i2)
   exit(1)
 MARGB12m = MARGB12
+i1m = i1
+i2m = i2
 W[1] = 1.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 W[0] = 0.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
-i = int(MARGB12m[3]) + 1
-j = int(MARGB12m[4]) + 1
+i = i1m + 1
+j = i2m + 1
 print ('T1 Wmax w1, w2: ', Wm[0], Wm[1])
-print ('T1 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], MARGB12m[3], MARGB12m[4])
+print ('T1 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], i1m, i2m)
 print ('T1 b= ', b)
 if b != -4.:
   print ("b != -4! b = %s " % b)
@@ -53,26 +59,32 @@ bsSvmInverseY (Y, YNEGPOS);
 W[0] = 1.
 W[1] = 0.
 Wm = W.copy ()
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
-if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or MARGB12[3] != 1.0 or MARGB12[4] != 2.0:
-  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2: ', MARGB12[0], MARGB12[1], MARGB12[2], MARGB12[3], MARGB12[4])
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or i1 != 1 or i2 != 2:
+  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2: ', MARGB12[0], MARGB12[1], MARGB12[2], i1, i2)
   exit(1)
 MARGB12m = MARGB12
+i1m = i1
+i2m = i2
 W[1] = 1.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 W[0] = 0.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
-i = int(MARGB12m[3]) + 1
-j = int(MARGB12m[4]) + 1
+i = i1m + 1
+j = i2m + 1
 print ('T2 Wmax w1, w2: ', Wm[0], Wm[1])
-print ('T2 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], MARGB12m[3], MARGB12m[4])
+print ('T2 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], i1m, i2m)
 print ('T2 b= ', b)
 if b != -4.:
   print ("b != -4! b = %s " % b)
@@ -94,26 +106,32 @@ for i in range (Y.shape[0]):
 W[0] = 1.
 W[1] = 0.
 Wm = W.copy ()
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
-if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or MARGB12[3] != 1.0 or MARGB12[4] != 2.0 or MARGB12[5] != 1.0:
-  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2, cntWrong=1: ', MARGB12[0], MARGB12[1], MARGB12[2], MARGB12[3], MARGB12[4], MARGB12[5])
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or i1 != 1 or i2 != 2 or cntWrng != 1:
+  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2, cntWrong=1: ', MARGB12[0], MARGB12[1], MARGB12[2], i1, i2, cntWrng)
   exit(1)
 MARGB12m = MARGB12
+i1m = i1
+i2m = i2
 W[1] = 1.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 W[0] = 0.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
-i = int(MARGB12m[3]) + 1
-j = int(MARGB12m[4]) + 1
+i = i1m + 1
+j = i2m + 1
 print ('T3 Wmax w1, w2: ', Wm[0], Wm[1])
-print ('T3 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], MARGB12m[3], MARGB12m[4])
+print ('T3 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], i1m, i2m)
 print ('T3 b= ', b)
 if b != -4.:
   print ("b != -4! b = %s " % b)
@@ -138,26 +156,32 @@ for i in range (Y.shape[0]):
 W[0] = 1.
 W[1] = 0.
 Wm = W.copy ()
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
-if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or MARGB12[3] != 1.0 or MARGB12[4] != 2.0 or MARGB12[5] != 1.0:
-  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2, cntWrong=1: ', MARGB12[0], MARGB12[1], MARGB12[2], MARGB12[3], MARGB12[4], MARGB12[5])
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or i1 != 1 or i2 != 2 or cntWrng != 1:
+  print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2, cntWrong=1: ', MARGB12[0], MARGB12[1], MARGB12[2], i1, i2, cntWrng)
   exit(1)
 MARGB12m = MARGB12
+i1m = i1
+i2m = i2
 W[1] = 1.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 W[0] = 0.
-MARGB12 = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
+MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12m[0] < MARGB12[0]:
   MARGB12m = MARGB12
+  i1m = i1
+  i2m = i2
   Wm = W.copy ()
 b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
-i = int(MARGB12m[3]) + 1
-j = int(MARGB12m[4]) + 1
+i = i1m + 1
+j = i2m + 1
 print ('T4 Wmax w1, w2: ', Wm[0], Wm[1])
-print ('T4 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], MARGB12m[3], MARGB12m[4])
+print ('T4 margin max, bHi, bHj, i, j: ', MARGB12m[0], MARGB12m[1], MARGB12m[2], i1m, i2m)
 print ('T4 b= ', b)
 if b != -4.:
   print ("b != -4! b = %s " % b)
@@ -168,3 +192,16 @@ if not( ( i == 2 and j == 3) or ( i == 3 and j == 2)  ):
   exit(1)
 
 print ('Test4 OK!')
+
+for i in range (Y.shape[0]):
+  if Y[0] != YNEGPOS[i]:
+    Y[0] = YNEGPOS[i]
+    break
+
+Wa, ba, cntWrnga = bsSvmTrain (X, Y, bsSvmLinKern, YNEGPOS, 0.0001)
+
+if Wa[0] != 1.0 or Wa[1] != 1.0 or ba != -4.0 or cntWrnga != 0:
+  print ("No met: W{1,1}, b=-4, cntWrng=0", Wa, ba, cntWrnga)
+  exit(1)
+
+print ('Test 5 OK!')
