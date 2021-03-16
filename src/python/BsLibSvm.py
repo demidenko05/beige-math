@@ -9,15 +9,16 @@
 #Python/NumPy based SVM library
 #see tests and usages in svm folder
 
+import sys
 import numpy as np
+import cmath
 
 #Validate data
 #pXARR - array(number of samples, dimension), type should by float64
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
-#pWVEC - array(dimension) - coefficient vector
-#pKernel - dot function for two vectors
+#pKernel - kernel with dot function for two vectors
 #return exception or array(2)  0 - negative Y, 1 - positive Y
-def bsSvmCheckData (pXARR, pYARR, pWVEC, pKernel):
+def bsSvmCheckData (pXARR, pYARR, pKernel):
   sz = pYARR.shape[0]
   if sz < 2:
     print ('Size of data less then 2!')
@@ -44,7 +45,7 @@ def bsSvmCheckData (pXARR, pYARR, pWVEC, pKernel):
 #pXARR - array(number of samples, dimension), type should by float64
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
 #pWVEC - array(dimension) - coefficient vector
-#pKernel - dot function for two vectors
+#pKernel - kernel with dot function for two vectors
 #pYNEGPOS - array(2) 0 - negative Y, 1 - positive Y
 #return exception if error or [array(3) float64, int, int, int] - [minimum margin, bH1, bH2], i1, i2, countWrong
 def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
@@ -55,8 +56,11 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
   cntWrng = 0
   #1. compute all b[i] and data for wrong data decision:
   bMinMax = np.zeros (8)
-  bMin = -99999999999.99
-  bMax = 99999999999.99
+  bMin = -sys.float_info.max #-1.7976931348623157e+308
+  bMax = sys.float_info.max #1.7976931348623157e+308
+  bInfp = float ('Infinity')
+  bInfn = float ('-Infinity')
+  bNan = float ('nan')
   bMinMax[0] = bMax
   bMinMax[1] = bMin
   bMinMax[2] = bMax
@@ -66,7 +70,10 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
   for i in range (sz):
     #for 2D: x1w1 + x2w2 + b = 0 -> b = -x1w1 -x2w2
     #here b = -K(X,W)
-    B[i] = - pKernel (pXARR[i], pWVEC)
+    B[i] = - pKernel.dot (pXARR[i], pWVEC)
+    if B[i] == bInfp or B[i] == bInfn or B[i] == bNan or B[i] == bMin or B[i] == bMax:
+      print ('Not yet implemented: Bi: ',  B[i])
+      raise
     if pYARR[i] == pYNEGPOS[0]:
       if B[i] < bMinMax[0]:
         bMinMax[0] = B[i]
@@ -99,8 +106,8 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
     if isInverse == 1:
       MARGB12[1] = bMinMax[4]
       MARGB12[2] = bMinMax[6]
-      i1 = int(bMinMax[5])
-      i2 = int(bMinMax[7])
+      i1 = int (bMinMax[5])
+      i2 = int (bMinMax[7])
       idxNeg = 1
       idxPos = 0
       bmm = bMinMax[0]
@@ -136,6 +143,16 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
             bMinMax[0] = B[i]
             MARGB12[1] = B[i]
             i1 = i
+      if bMinMax[0] == bMax:
+        #tst3d1.py
+        #MINMAX[-2. -2. -2. -2. -2.  3. -2.  0.]
+        #W:  [0. 1. 1.]
+        #B:  [-2. -2. -2. -2. -2. -2.]
+        #brdr:  -2.0
+        #cntWrng:  3 - all
+        bMinMax[0] = bMinMax[1]
+        MARGB12[1] = bMinMax[1]
+        # i don't care it's wrong hyperplane
     elif bMinMax[2] == bMin:
       for i in range (sz):
         if pYARR[i] == pYNEGPOS[idxPos]:
@@ -145,11 +162,15 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
             bMinMax[2] = B[i]
             MARGB12[2] = B[i]
             i2 = i
+      if bMinMax[2] == bMin:
+        bMinMax[2] = bMinMax[3]
+        MARGB12[2] = bMinMax[3]
+
   elif bMinMax[0] < bMinMax[2]:
     MARGB12[1] = bMinMax[4]
     MARGB12[2] = bMinMax[6]
-    i1 = int(bMinMax[5])
-    i2 = int(bMinMax[7])
+    i1 = int (bMinMax[5])
+    i2 = int (bMinMax[7])
 
   magW = 0.0
   for i in range (pWVEC.shape[0]):
@@ -158,18 +179,23 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
 
   MARGB12[0] = (- MARGB12[2] + MARGB12[1]) / magW
   if MARGB12[0] < 0.0:
-    print ('Wrong algorithm, MARGB12:', MARGB12)
+    print ('Wrong algorithm:\n  MINMAX: ', bMinMax)
+    print ('  cntWrng: ', cntWrng)
+    print ('  B: ', B)
+    print ('  W: ', pWVEC)
+    print ('  MARGB12: ', MARGB12)
     raise
   return [MARGB12, i1, i2, cntWrng]
 
 #Linear kernel
 #passed data must be preliminary validated! 
 #return dot product of two vectors
-def bsSvmLinKern (pVEC1, pVEC2):
-  rz = 0. #TODO float64
-  for i in range (pVEC1.shape[0]):
-    rz += pVEC1[i] * pVEC2[i]
-  return rz
+class BsSvmLinKern:
+  def dot (self, pVEC1, pVEC2):
+    rz = 0. #TODO float64
+    for i in range (pVEC1.shape[0]):
+      rz += pVEC1[i] * pVEC2[i]
+    return rz
 
 
 #for tests purposes
@@ -192,7 +218,7 @@ def bsSvmInverseY (pYARR, pYNEGPOS):
 #Find separating hyperplane - coefficient vector W and shifting b, also returns count of non-separated samples
 #pXARR - array(number of samples, dimension), type should by float64
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
-#pKernel - dot function for two vectors
+#pKernel - kernel with dot function for two vectors
 #pYNEGPOS - array(2) 0 - negative Y, 1 - positive Y
 #pMinStep - minimum step to rotate W
 #return [array(dimension) float64, float64, int32] - coefficient vector W and shifting b, also returns count of non-separated samples
@@ -248,8 +274,24 @@ def bsSvmTrain (pXARR, pYARR, pKernel, pYNEGPOS,  pMinStep):
       if stp < pMinStep:
         break
 
-  #print ('MARGB12m, cntItr, cntWrngMin, cntWrngMax: ', MARGB12m, cntItr, cntWrngMin, cntWrngMax)
+  print ('MARGB12m, cntItr, cntWrngMin, cntWrngMax, i1m, i2m: ', MARGB12m, cntItr, cntWrngMin, cntWrngMax, i1m, i2m)
 
   b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
 
   return [Wm, b, cntWrngm]
+
+#RBF kernel
+class BsSvmRbfKern:
+  
+  def __init__(self, pGamma):
+    self.gamma = pGamma
+  
+  #passed data must be preliminary validated! 
+  #return dot product of two vectors
+  def dot (self, pVEC1, pVEC2):
+    SP = pVEC1 - pVEC2
+    mag = 0. #TODO float64
+    for i in range (SP.shape[0]):
+      mag += SP[i] * SP[i]
+    mag2 = mag * mag
+    return cmath.e ** (- self.gamma * mag2)

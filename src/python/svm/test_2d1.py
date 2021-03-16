@@ -11,12 +11,14 @@ sys.path += [os.path.dirname(os.path.abspath (__file__)) + '/..']
 from BsLibSvm import *
 import numpy as np      
 
+bsSvmLinKern = BsSvmLinKern ()
+
 #test data form the first article calc.py:
 X = np.array ([[.5, 1.2], [1., 1.], [3., 3.], [4., 3.3]])
 Y = np.array ([0, 0, 1, 1])
 W = np.array ([1., 0.])
 Wm = W.copy ()
-YNEGPOS = bsSvmCheckData (X, Y, W, bsSvmLinKern)
+YNEGPOS = bsSvmCheckData (X, Y, bsSvmLinKern)
 MARGB12, i1, i2, cntWrng = bsSvmFndMinMarg (X, Y, W, bsSvmLinKern, YNEGPOS)
 if MARGB12[0] != 2.0 or MARGB12[1] != -1.0 or MARGB12[2] != -3.0 or i1 != 1 or i2 != 2:
   print ('No met W{1,0}: margin min=2, bHi=-1, bHj=-3, i=1, j=2: ', MARGB12[0], MARGB12[1], MARGB12[2], i1, i2)
