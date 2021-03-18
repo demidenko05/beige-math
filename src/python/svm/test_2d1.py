@@ -200,7 +200,7 @@ for i in range (Y.shape[0]):
     Y[0] = YNEGPOS[i]
     break
 
-Wa, ba, cntWrnga = bsSvmTrain (X, Y, bsSvmLinKern, YNEGPOS, 0.0001)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, bsSvmLinKern, YNEGPOS, 0.0001)
 
 if Wa[0] != 1.0 or Wa[1] != 1.0 or ba != -4.0 or cntWrnga != 0:
   print ("No met: W{1,1}, b=-4, cntWrng=0", Wa, ba, cntWrnga)

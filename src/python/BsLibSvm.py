@@ -221,7 +221,7 @@ def bsSvmInverseY (pYARR, pYNEGPOS):
 #pKernel - kernel with dot function for two vectors
 #pYNEGPOS - array(2) 0 - negative Y, 1 - positive Y
 #pMinStep - minimum step to rotate W
-#return [array(dimension) float64, float64, int32] - coefficient vector W and shifting b, also returns count of non-separated samples
+#return [array(dimension) float64, float64, int32, float64] - coefficient vector W and shifting b, also returns count of non-separated samples and the margin
 def bsSvmTrain (pXARR, pYARR, pKernel, pYNEGPOS,  pMinStep):
   dimns = pXARR.shape[1]
   W = np.ones (dimns)
@@ -278,7 +278,7 @@ def bsSvmTrain (pXARR, pYARR, pKernel, pYNEGPOS,  pMinStep):
 
   b = MARGB12m[2] - ((MARGB12m[2] - MARGB12m[1]) / 2.)
 
-  return [Wm, b, cntWrngm]
+  return [Wm, b, cntWrngm, MARGB12m[0]]
 
 #RBF kernel
 class BsSvmRbfKern:

@@ -51,7 +51,7 @@ if MARGB12[0] >= 10.0 or i1 != 2 or i2 != 3 or cntWrng != 0:
 print ('W{1,1,1} MARGB12: ', MARGB12)
 print ('Tests 3 OK!')
 
-Wa, ba, cntWrnga = bsSvmTrain (X, Y, bsSvmLinKern, YNEGPOS, 0.0001)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, bsSvmLinKern, YNEGPOS, 0.0001)
 #MARGB12m, cntItr, cntWrngMin, cntWrngMax:  [ 9.99999993 12.99829102  2.99951172] 42 0 3
 #No met: W{1,0,0}, b=-8, cntWrng=0 [1. 0. 0.] 7.9989013671875 0
 if Wa[0] != 1.0 or Wa[1] != 0.0 or Wa[1] != 0.0 or (-8.0 - ba) > 0.0001 or cntWrnga != 0:

@@ -66,14 +66,14 @@
       </p>
       <p>But what about images, e.g. letters? Black pixels - class 2, white - class 1, how to make them separable by hyperplane?
         If you just add a new dimension different from classes, e.g. <b>x3 = 2</b> for class 1 and <b>x3 = 4</b> for class 2,
-        then it will be separable visibly, but not separable by SVM method. In opposite to previous example (separable by non-linear function - circle), any letter has extremely complex non-linear separating function - its contour.
+        then it will be separable visibly by hyperplane, but it can't be used by SVM method for classification test samples. In opposite to previous example (separable by non-linear function - circle), any letter has extremely complex non-linear separating function - its contour.
         Is it possible to transform letter's images to get it linearly separable by only hyperplane? It seems impossible. But SVM become famous because of the best hand-written letters recognition.
       </p>
       <p>It seems that LIBSVM is the best SVM library. This is C library. To compile it from source you should have GCC and Make. According to their experience we should use the best choice for many cases: radial basis function (RBF) in their interpretation:
       \begin{align}
         K(\overrightarrow{X_i}, \overrightarrow{X_j}) = e^{-\gamma\|\overrightarrow{X_i} - \overrightarrow{X_j}\|^2} \mbox{, where } \gamma > 0
       \end{align}
-        You should use their Python program (grid.py) to find the best \(\gamma\). By default it is <b>1/[number of features]</b> (number of features is probably number of pixels for a 2D image).
+        You should use their Python program (grid.py) to find the best \(\gamma\). By default it is <b>1/[number of features]</b> (number of features (or attributes) is probably number of pixels for a 2D image).
       </p>
       <p>Lets try LIBSVM for recognition 3 8x8 digits (see src/python/svm/dig012.py):
       </p>
@@ -134,11 +134,28 @@ Accuracy = 100% (1/1) (classification)
       <p>Lets try classification for this MIT example with <b>b=-7.071067811</b> and W={0, 1}, so for X(-2,-2) -> <b>2*sqrt(8)*1 - 7.071067811 = -1.414213562, i.e. class 1</b>,
        and for X(-2,-3) -> <b>2*sqrt(13)*1 - 7.071067811 = 0.14003474, i.e. class 2</b>. That is it works.
       </p>
-      <p>See svm/tst2.py that tests that.</p>
+      <p>See svm/test_2dmit.py that tests that.</p>
       <p>That means that we can find separating hyperplane (W and b) by rotating W with using any kernel without knowing "what is transformed data? And what is dimension size of transformed space?".
         Here rotating W in 64D in growing margin direction seems to be feasible.
       </p>
 
+      <p>If you look inside LIBSVM's svm.cpp, then you will see that sample rows data are treated as vectors, so here is 64D vector.
+        If we treat 64 points in 2D of a digit as one point in 64D, then we have 3 64D samples (training data), and 3 64D samples of testing samples.
+        Any two different points of any dimension are definitely linearly separable.
+      </p>
+      <p>So, we have 3 training samples, i.e. 3 classes. How to classify a test sample in case of number of classes is greater than two?
+        Definitely by finding margins between a test sample and training samples, and the minimum margin is decision, i.e. points of the same class must be close to each other. 
+      </p>
+      <p>Test svm/test_dig012.py do this. Unfortunately, in case of using linear kernel (without transformation), the test sample <b>2</b> is close to the training sample <b>0</b>!
+        But RBF with <b>gamma=1/64</b> works fine.
+      </p>
+      
+      <p>LIBSVM with linear kernel works fine for this 3 digits example.</p>
+      
+      <h4>Conclusion</h4>
+      <p>At this point, the method - "rotating coefficient vector for finding margin" seems to work enough good, except linear kernel on digits recognition.
+        But the final assessment can be done only after testing this method on large amount of samples.
+      </p>
 
       <p>
         References:

@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-# BSD 2-Clause License
-# Copyright (c) 2021, Yury Demidenko (Beigesoft™)
-# All rights reserved.
-# See the LICENSE in the root source folder
+#test data form MIT MIT6_034F10_tutor05.pdf page 8 (https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/)
+#license the same
 
 import sys, os
 sys.path += [os.path.dirname(os.path.abspath (__file__)) + '/..']
 from BsLibSvm import *
 import numpy as np      
 
-#test data form MIT MIT6_034F10_tutor05.pdf page 8:
 
 class MitKern:
   #K(X,W)=2*mag(X)*mag(W)
@@ -172,7 +169,7 @@ for i in range (Xt.shape[0]):
 
 print ('Test 3 OK!')
 
-Wa, ba, cntWrnga = bsSvmTrain (X, Y, mitKern, YNEGPOS, 0.0001)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, mitKern, YNEGPOS, 0.0001)
 #No met: W{-0.5,1}MARGB12[0] > W{1,0}MARGB12m[0] 2.82842712474619 2.828427124746189
 #MARGB12m, cntItr, cntWrngMin, cntWrngMax, i1m, i2m:  [ 2.82842712 -6.32455532 -9.48683298] 28 0 0 3 4
 #No met: W{-0.5,1}, b=-10, cntWrng=0 [-0.5  1. ] -7.905694150420949 0
