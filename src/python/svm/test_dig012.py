@@ -9,6 +9,7 @@
 import sys, os
 sys.path += [os.path.dirname(os.path.abspath (__file__)) + '/..']
 from BsLibSvm import *
+from BsLibMisc import *
 from LIBSVMORIG import *
 from dig012l import *
 import numpy as np
@@ -159,7 +160,9 @@ print ('Test linear 1t OK!')
 X[0] = NUMSt[2].copy()
 X[1] = NUMS[2].copy()
 YNEGPOS = bsSvmCheckData (X, Y, kern)
-print ('2t2 X:\n', X)
+print ('2t-2 linear:')
+bsPrnImgTxt (X[0], 0, digSz)
+bsPrnImgTxt (X[1], 0, digSz)
 #print ('Y: ', Y)
 Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, kern, YNEGPOS, minStp)
 print ('for 2t-2:\n  marga, ba: ', marga, ba)
@@ -170,7 +173,9 @@ margmin = marga
 #2t-0
 X[1] = NUMS[0].copy()
 YNEGPOS = bsSvmCheckData (X, Y, kern)
-print ('2t0 X:\n', X)
+print ('2t0 X:')
+bsPrnImgTxt (X[0], 0, digSz)
+bsPrnImgTxt (X[1], 0, digSz)
 #print ('Y: ', Y)
 Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, kern, YNEGPOS, minStp)
 print ('for 2t-0:\n  marga, ba: ', marga, ba)

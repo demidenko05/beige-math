@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!--<script type="text/javascript" src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/navbar-top.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark sidebar bg-dark mb-4">
+      <div class="container-fluid">
+        <a href="index.html" class="navbar-brand navbar-brand-img"><img src="img/logo.png"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Articles</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="svmidx.html">Understanding Support Vector Machines.</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Info</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="license-bsmath.html">Beigesoft™ Math License</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="navbar-nav navbar-right">
+            <li class="nav-item">
+              <a class="nav-link" href="https://demidenko05.github.io/beige-acc/">Beigesoft™ main site</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+    
+    <div>
+      <h3>Using SVM for hand-written digits recognition on NIST database.</h3>
+      
+      <p><b>Keywords: Support vector machines, LIBSVM, hand-written digits recognition.</b></p>
+      
+      <p>
+        We will use the most easy to get database from http://www.cis.jhu.edu/~sachin/digit/digit.html.
+        There are ten files data0..data9, 1000 samples (28x28 unsigned byte) each.
+        We will use the first 900 samples for training, and the rest 100 as test samples (of each digit).
+      </p>
+      <p>
+        First, try LIBSVM to classify it. Use <b>svm/nist/dig1000tolibsvm.py</b> to transfer data to LIBSVM format:
+      </p>
+<pre>
+#python dig1000tolibsvm.py [path_to_nist_files]
+</pre>
+      <p>Result files <b>nist1000x28x28</b> (900 training samples) and <b>nist1000x28x28t</b> (100 test samples) will be in the folder with source NIST databases.</p>
+      <p>Despite of polynomial kernel is better for this job (see http://yann.lecun.com/exdb/mnist/), try RBF first according LIBSVM guide:</p>
+<pre>
+#./svm-scale -l -1 -u 1 -s range1 nist1000x28x28 > nist1000x28x28.scale
+
+#./svm-scale -r range1 nist1000x28x28t > nist1000x28x28t.scale
+WARNING: feature index 52 appeared in file nist1000x28x28t was not seen in the scaling factor file range1. The feature is scaled to 0.
+
+#./svm-train nist1000x28x28.scale
+...
+
+#./svm-predict nist1000x28x28t.scale nist1000x28x28.scale.model nist1000x28x28t.pred1
+Accuracy = 94.2% (942/1000) (classification)
+</pre>
+      <p>The results are enough good. 0 - 100 OK, 1 - 2 wrong, 2 - 8 wrong, 3 - 10 wrong, etc. The NIST database contains of samples that can confuse even a human, e.g. 5 #900 looks like 6.
+        All command above were run very fast. But <b>python tools/grid.py nist1000x28x28.scale</b> - getting better gamma takes a lot of time.
+      </p>
+      <p>
+        References:
+      </p>
+      <ol>
+        <li><a name = "LIBSVM-guide"></a> <a href="http://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf">C.-W. Hsu, C.-C. Chang, and C.-J. Lin. A practical guide to support vector classification. Technical report, Department of Computer Science, National Taiwan University, 2003.</a></li>
+      </ol>
+
+    </div>
+
+    <footer class="blog-footer">
+      Copyright &#169; 2021 <a href="https://demidenko05.github.io/beige-math/">Beigesoft™</a> All rights reserved.      
+    </footer>
+
+    </main>
+
+  </body>
+
+</html>

@@ -197,24 +197,6 @@ class BsSvmLinKern:
       rz += pVEC1[i] * pVEC2[i]
     return rz
 
-
-#for tests purposes
-#Inverse Y
-#pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
-#pYNEGPOS - array(2) 0 - negative Y, 1 - positive Y
-def bsSvmInverseY (pYARR, pYNEGPOS):
-  yn = pYNEGPOS[0]
-  yp = 1
-  for i in range (pYARR.shape[0]):
-    if pYARR[i] != yn:
-      yp = pYARR[i]
-      break
-  for i in range (pYARR.shape[0]):
-    if pYARR[i] == yn:
-      pYARR[i] = yp
-    else:
-      pYARR[i] = yn
-
 #Find separating hyperplane - coefficient vector W and shifting b, also returns count of non-separated samples
 #pXARR - array(number of samples, dimension), type should by float64
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]

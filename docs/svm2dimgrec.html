@@ -139,7 +139,7 @@ Accuracy = 100% (1/1) (classification)
         Here rotating W in 64D in growing margin direction seems to be feasible.
       </p>
 
-      <p>If you look inside LIBSVM's svm.cpp, then you will see that sample rows data are treated as vectors, so here is 64D vector.
+      <p>If you look inside LIBSVM's <a href="https://github.com/cjlin1/libsvm/blob/master/svm.cpp">svm.cpp</a>, then you will see that sample rows data are treated as vectors, so here is 64D vector.
         If we treat 64 points in 2D of a digit as one point in 64D, then we have 3 64D samples (training data), and 3 64D samples of testing samples.
         Any two different points of any dimension are definitely linearly separable.
       </p>

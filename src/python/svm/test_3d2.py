@@ -9,7 +9,7 @@
 import sys, os
 sys.path += [os.path.dirname(os.path.abspath (__file__)) + '/..']
 from BsLibSvm import *
-from BsLibSvm import *
+from BsLibMisc import *
 import numpy as np      
 
 bsSvmLinKern = BsSvmLinKern ()
