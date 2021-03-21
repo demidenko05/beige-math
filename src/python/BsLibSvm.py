@@ -11,7 +11,7 @@
 
 import sys
 import numpy as np
-import cmath
+import math
 
 #Validate data
 #pXARR - array(number of samples, dimension), type should by float64
@@ -264,16 +264,31 @@ def bsSvmTrain (pXARR, pYARR, pKernel, pYNEGPOS,  pMinStep):
 
 #RBF kernel
 class BsSvmRbfKern:
-  
+
   def __init__(self, pGamma):
     self.gamma = pGamma
-  
+
   #passed data must be preliminary validated! 
   #return dot product of two vectors
   def dot (self, pVEC1, pVEC2):
     SP = pVEC1 - pVEC2
-    mag = 0. #TODO float64
+    mag = 0.0 #TODO float64
     for i in range (SP.shape[0]):
       mag += SP[i] * SP[i]
     mag2 = mag * mag
-    return cmath.e ** (- self.gamma * mag2)
+    return math.exp(-self.gamma*mag2)
+
+#Polynomial kernel
+class BsSvmPolyKern:
+
+  def __init__(self, pB, pN):
+    self.b = pB
+    self.n = pN
+
+  #passed data must be preliminary validated! 
+  #return dot product of two vectors
+  def dot (self, pVEC1, pVEC2):
+    sm = 0.
+    for i in range (pVEC1.shape[0]):
+      sm += pVEC1[i] * pVEC2[i]
+    return (sm + self.b) ** self.n

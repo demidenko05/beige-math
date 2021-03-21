@@ -47,7 +47,6 @@ try:
   for dig in range (10):
 
     fnme = pth + "/data" + str (dig)
-    NUMd = False
     NUMd = np.fromfile (fnme, dtype=np.uint8)
 
     if NUMd.shape[0] != digCnt * smpCnt:

@@ -48,13 +48,14 @@
     <div>
       <h3>Using SVM for hand-written digits recognition on NIST database.</h3>
       
-      <p><b>Keywords: Support vector machines, LIBSVM, hand-written digits recognition.</b></p>
+      <p><b>Keywords: Support vector machines, hand-written digits recognition.</b></p>
       
       <p>
         We will use the most easy to get database from http://www.cis.jhu.edu/~sachin/digit/digit.html.
         There are ten files data0..data9, 1000 samples (28x28 unsigned byte) each.
         We will use the first 900 samples for training, and the rest 100 as test samples (of each digit).
       </p>
+      <h4>Classifying by LIBSVM</h4>
       <p>
         First, try LIBSVM to classify it. Use <b>svm/nist/dig1000tolibsvm.py</b> to transfer data to LIBSVM format:
       </p>
@@ -78,6 +79,17 @@ Accuracy = 94.2% (942/1000) (classification)
       <p>The results are enough good. 0 - 100 OK, 1 - 2 wrong, 2 - 8 wrong, 3 - 10 wrong, etc. The NIST database contains of samples that can confuse even a human, e.g. 5 #900 looks like 6.
         All command above were run very fast. But <b>python tools/grid.py nist1000x28x28.scale</b> - getting better gamma takes a lot of time.
       </p>
+      <h4>Classifying by coefficient vector rotation for 28x28 samples transformed into one 784D sample.</h4>
+      <p>This job was done by python/svm/nist/dig1000bssvm.py. It doesn't work for those 784D samples with no scaling and with scaling to [0,1], plus transformation with Polynomial power 9, or RBF.
+      The resulting margins between the test samples and the training ones do not matter for classification, e.g. these margins for scaling [0,1] Polynomial power 9:
+      </p>
+<pre>
+0test-0train: 1.91764603e+17, 1.08844573e+20, ...
+0test-1train: 6.32187058e+17, 6.60399031e+17, ...
+0test-2train: 1.19722044e+19, 6.16342828e+19, 3.27228745e+17, ...
+</pre>
+      <p>Maybe we can somehow transform an 28x28 image into a 784D sample, and manage it classifiable, i.e. margins between samples of the same class are smallest.
+        But finding a margin by rotation the coefficient vector in 784D takes around 4 second, so it's not reliable for multi-classification between hundreds of samples.</p>
       <p>
         References:
       </p>

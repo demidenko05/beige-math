@@ -375,3 +375,47 @@ if margmin != marg1t1:
   print ('ERR RBF: marg1t1 != margmin', marg1t1, margmin)
   exit (1)
 print ('Test RBF 1t OK!')
+
+#test poly:
+#test 2t Poly:
+kern = BsSvmPolyKern (1.0, 9.0)
+#2t-2
+X[0] = NUMSt[2].copy()
+X[1] = NUMS[2].copy()
+YNEGPOS = bsSvmCheckData (X, Y, kern)
+#print ('X: ', X)
+#print ('Y: ', Y)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, kern, YNEGPOS, minStp)
+print ('for 2t-2:\n  marga, ba: ', marga, ba)
+print ('  Wa: ', Wa)
+print ('  cntWrnga: ', cntWrnga)
+marg2t2 = marga
+margmin = marga
+#2t-0
+X[1] = NUMS[0].copy()
+YNEGPOS = bsSvmCheckData (X, Y, kern)
+#print ('X: ', X)
+#print ('Y: ', Y)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, kern, YNEGPOS, minStp)
+print ('for 2t-0:\n  marga, ba: ', marga, ba)
+print ('  Wa: ', Wa)
+print ('  cntWrnga: ', cntWrnga)
+if marga < margmin:
+  margmin = marga
+#2t-1
+X[1] = NUMS[1].copy()
+YNEGPOS = bsSvmCheckData (X, Y, kern)
+#print ('X: ', X)
+#print ('Y: ', Y)
+Wa, ba, cntWrnga, marga = bsSvmTrain (X, Y, kern, YNEGPOS, minStp)
+print ('for 2t-1:\n  marga, ba: ', marga, ba)
+print ('  Wa: ', Wa)
+print ('  cntWrnga: ', cntWrnga)
+if marga < margmin:
+  margmin = marga
+
+if margmin != marg2t2:
+  print ('ERR Poly: Poly-LIBSVM kernel marg2t2 != margmin', marg2t2, margmin)
+  exit (1)
+
+print ('Test Poly 2t OK!')
