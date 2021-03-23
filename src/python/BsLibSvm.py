@@ -41,6 +41,9 @@ def bsSvmCheckData (pXARR, pYARR, pKernel):
   #TODO farther data validation - arrays size, etc.
   return YNEGPOS
 
+#doesn't work on 64D (not maximum), see test_dig012a.py vs test_dig012.py
+#finding alphas and b by solving linear system equation is better in practice
+#this is for test and study purposes, works perfect on 2-3D
 #Find minimum margin and correspondent samples indexes and [B]
 #pXARR - array(number of samples, dimension), type should by float64
 #pYARR - array(number of samples) - correspondent separating function Y to samples [0,1] or [-1,1]
@@ -192,10 +195,11 @@ def bsSvmFndMinMarg (pXARR, pYARR, pWVEC, pKernel, pYNEGPOS):
 #return dot product of two vectors
 class BsSvmLinKern:
   def dot (self, pVEC1, pVEC2):
-    rz = 0. #TODO float64
-    for i in range (pVEC1.shape[0]):
-      rz += pVEC1[i] * pVEC2[i]
-    return rz
+    #rz = 0. #TODO float64
+    #for i in range (pVEC1.shape[0]):
+      #rz += pVEC1[i] * pVEC2[i]
+    #return rz
+    return np.dot (pVEC1, pVEC2)
 
 #Find separating hyperplane - coefficient vector W and shifting b, also returns count of non-separated samples
 #pXARR - array(number of samples, dimension), type should by float64
@@ -272,11 +276,13 @@ class BsSvmRbfKern:
   #return dot product of two vectors
   def dot (self, pVEC1, pVEC2):
     SP = pVEC1 - pVEC2
-    mag = 0.0 #TODO float64
-    for i in range (SP.shape[0]):
-      mag += SP[i] * SP[i]
+    #mag = 0.0 #TODO float64
+    #for i in range (SP.shape[0]):
+     # mag += SP[i] * SP[i]
+    #mag2 = mag * mag
+    mag = np.linalg.norm (SP)
     mag2 = mag * mag
-    return math.exp(-self.gamma*mag2)
+    return math.exp (-self.gamma*mag2)
 
 #Polynomial kernel
 class BsSvmPolyKern:

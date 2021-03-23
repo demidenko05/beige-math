@@ -7,3 +7,4 @@ python3 test_2dmit.py
 python3 test_3d1.py
 python3 test_3d2.py
 python3 test_dig012.py
+python3 test_dig012a.py
