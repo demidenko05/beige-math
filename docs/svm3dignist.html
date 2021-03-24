@@ -88,8 +88,65 @@ Accuracy = 94.2% (942/1000) (classification)
 0test-1train: 6.32187058e+17, 6.60399031e+17, ...
 0test-2train: 1.19722044e+19, 6.16342828e+19, 3.27228745e+17, ...
 </pre>
-      <p>Maybe we can somehow transform an 28x28 image into a 784D sample, and manage it classifiable, i.e. margins between samples of the same class are smallest.
-        But finding a margin by rotation the coefficient vector in 784D takes around 4 second, so it's not reliable for multi-classification between hundreds of samples.</p>
+      <p>In the previous article we found that current algorithm "rotating coefficient vector" doesn't find global maximum in 64D.
+        Also finding a margin by rotation the coefficient vector in 784D takes around 4 second, so currently it's not reliable for multi-classification between hundreds of samples.
+        Maybe it's possible to fix algorithm to find the global maximum in small time (minimum iteration).
+      </p>
+      <h4>Classifying by solving linear system equation for 28x28 samples transformed into one 784D sample.</h4>
+      <p><b>python/svm/nist/dig1000mitsvm.py</b> do this job. It's also slow, classifying each test sample against 9000 train samples takes around 10 sec for linear kernel.
+        Preliminary results for linear kernel:
+      </p>
+      <pre>
+test digit, test index, minimum: train digit, train index, margin:  0 0 0 475 5.4772255750516585
+test digit, test index, minimum: train digit, train index, margin:  0 1 0 774 6.2449979983983965
+test digit, test index, minimum: train digit, train index, margin:  0 2 0 754 6.782329983125268
+test digit, test index, minimum: train digit, train index, margin:  0 3 0 495 7.810249675906651
+test digit, test index, minimum: train digit, train index, margin:  0 4 0 262 6.782329983125268
+test digit, test index, minimum: train digit, train index, margin:  0 5 0 298 6.557438524302
+test digit, test index, minimum: train digit, train index, margin:  0 6 0 500 6.708203932499371
+test digit, test index, minimum: train digit, train index, margin:  0 7 0 248 7.14142842854285
+test digit, test index, minimum: train digit, train index, margin:  0 8 0 297 6.928203230275507
+test digit, test index, minimum: train digit, train index, margin:  0 9 0 221 9.539392014169454
+test digit, test index, minimum: train digit, train index, margin:  0 10 0 199 6.633249580710804
+#i.e. 100% OK for first 10 of 0
+test digit, test index, minimum: train digit, train index, margin:  1 0 1 719 3.316624790355401
+test digit, test index, minimum: train digit, train index, margin:  1 1 1 609 5.000000000000001
+test digit, test index, minimum: train digit, train index, margin:  1 2 1 45 3.7416573867739404
+test digit, test index, minimum: train digit, train index, margin:  1 3 1 696 3.6055512754639882
+test digit, test index, minimum: train digit, train index, margin:  1 4 1 808 2.999999999999998
+test digit, test index, minimum: train digit, train index, margin:  1 5 1 330 3.0000000000000036
+test digit, test index, minimum: train digit, train index, margin:  1 6 1 451 3.162277660168378
+test digit, test index, minimum: train digit, train index, margin:  1 7 1 539 3.4641016151377553
+test digit, test index, minimum: train digit, train index, margin:  1 8 1 63 2.0
+test digit, test index, minimum: train digit, train index, margin:  1 9 1 689 3.8729833462074157
+test digit, test index, minimum: train digit, train index, margin:  1 10 1 834 3.9999999999999982
+#i.e. 100% OK for first 10 of 1
+test digit, test index, minimum: train digit, train index, margin:  2 0 2 684 7.280109889280519
+test digit, test index, minimum: train digit, train index, margin:  2 1 2 711 7.21110255092798
+test digit, test index, minimum: train digit, train index, margin:  2 2 2 315 7.61577310586391
+test digit, test index, minimum: train digit, train index, margin:  2 3 2 159 7.54983443527075
+test digit, test index, minimum: train digit, train index, margin:  2 4 2 180 7.071067811865474
+test digit, test index, minimum: train digit, train index, margin:  2 5 2 475 7.681145747868609
+test digit, test index, minimum: train digit, train index, margin:  2 6 2 247 7.810249675906651
+test digit, test index, minimum: train digit, train index, margin:  2 7 2 330 6.633249580710799
+test digit, test index, minimum: train digit, train index, margin:  2 8 2 83 7.141428428542852
+test digit, test index, minimum: train digit, train index, margin:  2 9 2 330 6.164414002968975
+test digit, test index, minimum: train digit, train index, margin:  2 10 2 362 8.83176086632785
+#i.e. 100% OK for first 10 of 2
+test digit, test index, minimum: train digit, train index, margin:  3 0 3 745 7.810249675906654
+test digit, test index, minimum: train digit, train index, margin:  3 1 3 559 6.000000000000002
+test digit, test index, minimum: train digit, train index, margin:  3 2 9 126 8.306623862918075
+test digit, test index, minimum: train digit, train index, margin:  3 3 3 655 7.5498344352707525
+test digit, test index, minimum: train digit, train index, margin:  3 4 3 877 7.937253933193773
+test digit, test index, minimum: train digit, train index, margin:  3 5 9 294 7.745966692414833
+test digit, test index, minimum: train digit, train index, margin:  3 6 9 878 7.071067811865474
+test digit, test index, minimum: train digit, train index, margin:  3 7 3 664 6.782329983125268
+test digit, test index, minimum: train digit, train index, margin:  3 8 3 125 5.830951894845301
+test digit, test index, minimum: train digit, train index, margin:  3 9 3 416 8.717797887081346
+test digit, test index, minimum: train digit, train index, margin:  3 10 3 732 6.2449979983983965
+#i.e. 3 of 10 wrong for first 10 of 3
+      </pre>
+      <p>So, preliminary results for linear kernel are very good! But it's too slow in comparing with LIBSVM.</p>
       <p>
         References:
       </p>

@@ -134,7 +134,7 @@ Accuracy = 100% (1/1) (classification)
       <p>Lets try classification for this MIT example with <b>b=-7.071067811</b> and W={0, 1}, so for X(-2,-2) -> <b>2*sqrt(8)*1 - 7.071067811 = -1.414213562, i.e. class 1</b>,
        and for X(-2,-3) -> <b>2*sqrt(13)*1 - 7.071067811 = 0.14003474, i.e. class 2</b>. That is it works.
       </p>
-      <p>See svm/test_2dmit.py that tests that.</p>
+      <p>See <b>svm/test_2dmit.py</b> that tests that.</p>
       <p>That means that we can find separating hyperplane (W and b) by rotating W with using any kernel without knowing "what is transformed data? And what is dimension size of transformed space?".
         Here rotating W in 64D in growing margin direction seems to be feasible.
       </p>
@@ -146,15 +146,16 @@ Accuracy = 100% (1/1) (classification)
       <p>So, we have 3 training samples, i.e. 3 classes. How to classify a test sample in case of number of classes is greater than two?
         Definitely by finding margins between a test sample and training samples, and the minimum margin is decision, i.e. points of the same class must be close to each other. 
       </p>
-      <p>Test svm/test_dig012.py do this. Unfortunately, in case of using linear kernel (without transformation), the test sample <b>2</b> is close to the training sample <b>0</b>!
+      <p>Test <b>svm/test_dig012.py</b> do this. Unfortunately, in case of using linear kernel (without transformation), the test sample <b>2</b> is close to the training sample <b>0</b>!
         But RBF with <b>gamma=1/64</b> works fine.
       </p>
       
-      <p>LIBSVM with linear kernel works fine for this 3 digits example.</p>
       
       <h4>Conclusion</h4>
-      <p>At this point, the method - "rotating coefficient vector for finding margin" seems to work enough good, except linear kernel on digits recognition.
-        But the final assessment can be done only after testing this method on large amount of samples.
+      <p>LIBSVM with linear kernel works fine for this 3 digits example.</p>
+      <p>Method <a href="#mitAI2010F">MIT-AI2010F, MIT6_034F10_tutor05.pdf, page 6</a> - solving linear system equations with linear kernel also work fine, see <b>python/svm/test_dig012a.py</b></p>
+      <p>Method - "rotating coefficient vector for finding margin" can't find global maximum for many-dimensional samples (64D here) at this time.
+        For example, the margin between the training <b>0</b> and <b>1</b> by "vector rotating" is <b>0.73029674</b>, but by "solving system equations" it is <b>1.6329931618554523</b>.
       </p>
 
       <p>

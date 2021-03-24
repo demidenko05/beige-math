@@ -208,3 +208,4 @@ if Wa[0] != 1.0 or Wa[1] != 1.0 or ba != -4.0 or cntWrnga != 0:
   exit(1)
 
 print ('Test 5 OK!')
+

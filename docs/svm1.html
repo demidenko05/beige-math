@@ -154,8 +154,8 @@
       <p>Let's try 3 coefficient vectors: \(\overrightarrow{W1}=\langle 1, 0 \rangle \), \(\overrightarrow{W2}=\langle 1, 1 \rangle \), \(\overrightarrow{W3}=\langle 0, 1 \rangle \):
       </p>
       <p align="center"><img style="max-width: 100%" src="img/calc.png" /></p>
-      <p>See <b>src/python/svm/calc.py</b> that made this actually very simple job.</p>
-      <p>Is it possible to find wrong maximum (local maximum/minimum problem) by this way? Obviously not. When you rotate \(\overrightarrow{W}\) in any direction, then you definitely locate the global maximum.</p>
+      <p>See <b>src/python/svm/calc.py</b> that made this actually very simple job. See <b>svm/test_2d1.py</b> that automatically find coefficient vector by rotation.</p>
+      <p>Is it possible to find wrong maximum (local maximum/minimum problem) by this way? It's unclear, but in 64D automatic vector rotation by BsLibSvm find no global maximum. In 2-3D it works fine.</p>
 
       <h4>Classification.</h4>
       <p>To classify a sample in case of 2-classes you of course should use this equations:
@@ -170,9 +170,78 @@
       <p>for X(0.4, 0.5) we have: <b>0.4 + 0.5 - 4 = -3.1, i.e. class 1</b></p>
       <p>for X(2.4, 2.5) we have: <b>2.4 + 2.5 - 4 = 0.9, i.e. class 2</b></p>
 
+      <h4>Finding <b>b</b> and \(\overrightarrow{W}\) by solving linear system equation.</h4>
+      <p>
+        Lets solve it by actually SVM method (without coefficient vector rotation).
+        According to <a href="#mitAI2010F">MIT-AI2010F, MIT6_034F10_tutor05.pdf, page 6</a> we should write system equations by using SVM constrains:
+      \begin{align}
+        \sum_{i=1}^l \alpha_i y_i = 0
+      \end{align}
+      \begin{align}
+        \sum_{i=1}^l \alpha_i y_i {\overrightarrow{X_i}} \overrightarrow{X_+} + b = +1 \mbox{ for each sample belongs to positive SV }
+      \end{align}
+      \begin{align}
+        \sum_{i=1}^l \alpha_i y_i \overrightarrow{X_i} \overrightarrow{X_-} + b = -1 \mbox{ for each sample belongs to negative SV}
+      \end{align}
+      </p>
+      <p>
+        So, in Python we can explain it:
+<pre>
+X = np.array ([[0.5, 1.2], [1.0, 1.0], [3.0, 3.0], [4.0, 3.3]])
+Y = np.array ([-1, -1, 1, 1])
+#System equation must consist of points that belongs to two support vectors - negative and positive,
+#otherwise it's unsolvable, so make it for X_1 and X_2 (index from 0):
+#NumPy linalg solver left part:
+LP = np.array ([#constraint 1 sum (a_i*y_i) +0*b = 0:
+                [Y[1],  Y[2], 0.0],
+                #constraint 3 sum (a_i*y_i*X_i*X_1) + 1*b = -1
+                [Y[1]*np.dot(X[1],X[1]),Y[2]*np.dot(X[2],X[1]), 1.0],
+                #constraint 2 sum (a_i*y_i*X_i*X_2) + 1*b = 1
+                [Y[1]*np.dot(X[1],X[2]),Y[2]*np.dot(X[2],X[2]), 1.0],
+              ])
+#NumPy linalg solver right part:
+RP = np.array ([0.0, #constraint 1 sum (a_i*y_i) +0*b = 0
+               Y[1], #constraint 3 sum (a_i*y_i*X_i*X_1) + 1*b = -1
+               Y[2], #constraint 2 sum (a_i*y_i*X_i*X_2) + 1*b = +1
+                ])
+print ('Example 1 LP:\n', LP)
+print ('Example 1 RP:\n', RP)
+ALB = np.linalg.solve (LP, RP)
+print ('Example 1 a0, a1, b:\n', ALB)
+
+if not ( np.allclose (np.dot (LP, ALB), RP) ):
+  print ('No met: np.allclose (np.dot (LP, ALB), RP)')
+  exit (1)
+
+#W = sum(yi*ai*Xi)
+W = Y[1]*ALB[0]*X[1] + Y[2]*ALB[0]*X[2]
+print ('W:\n', W)
+wMag = np.linalg.norm (W)
+margStd = 2.0/wMag
+print ('margin=2/|W|: ', margStd)
+</pre>
+        output:
+<pre>
+Example 1 LP:
+ [[-1.  1.  0.]
+ [-2.  6.  1.]
+ [-6. 18.  1.]]
+Example 1 RP:
+ [ 0. -1.  1.]
+Example 1 a0, a1, b:
+ [ 0.25  0.25 -2.  ]
+W:
+ [0.5 0.5]
+margin=2/|W|:  2.828427124746192
+</pre>
+        This is <b>svm/test_exmpa1.py</b> file. System equation must consist of points that belongs to two support vectors - negative and positive, otherwise it's unsolvable.
+        Result \(\overrightarrow{W}=\langle 0.5, 0.5 \rangle \) with <b>b=-2</b> is equivalent to \(\overrightarrow{W}=\langle 1, 1 \rangle \) with <b>b=-4</b>.
+        Resulting \(\overrightarrow{W}\) and <b>b</b>, that is made by finding Lagrange multipliers, is normalized by the system of the equations, i.e negative support vector's <b>bHneg=b + 1</b> and positive one's <b>bHpos=b - 1</b>.
+      </p>
+
       <h4>Conclusion</h4>
       <p>This is the simplest case, i.e. few linearly separable samples in 2D. But vector algebra works in the same way for dimension of any size.
-        So, using SVM with simplest vector algebra seems to be simple (here is without Lagrange multipliers, see MIT6_034F10_tutor05.pdf in <a href="#mitAI2010F">MIT-AI2010F</a>), reliable and efficient for given case.
+        So, using SVM with simplest vector algebra seems to be simple (than finding Lagrange multipliers), reliable and efficient for given case.
       </p>
 
       <p>

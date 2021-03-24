@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # coding=UTF-8
 
-# BSD 2-Clause License
-# Copyright (c) 2021, Yury Demidenko (Beigesoft™)
-# All rights reserved.
-# See the LICENSE in the root source folder
-
 import sys, os
 sys.path += [os.path.dirname(os.path.abspath (__file__)) + '/..']
 from BsLibSvm import *
@@ -14,6 +9,8 @@ from dig012l import *
 import numpy as np
 
 #finding alphas and the b by solving linear system equation according to MIT MIT6_034F10_tutor05.pdf page 6 (https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/)
+#author Yury Demidenko
+
 #error in K(C, A) = 2*0+0*0 = 2
 LP = np.array ([[-1.0, -1.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, -2.0, 2.0, 1.0], [0.0, -2.0, 4.0, 1.0]])
 RP = np.array ([0.0, -1.0, -1.0, 1.0])
@@ -32,12 +29,12 @@ X[0] = NUMS[0]
 X[1] = NUMS[1]
 Y[0] = -1
 Y[1] = 1
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
-LP = np.array ([[-1.0, 1.0, 0.0], [k00, k10, 1.0], [k01, k11, 1.0]])
+LP = np.array ([[-1.0, 1.0, 0.0], [Y[0]*k00, Y[1]*k10, 1.0], [Y[0]*k01, Y[1]*k11, 1.0]])
 RP = np.array ([0.0, -1.0, 1.0])
 print ('LP:\n', LP)
 print ('RP:\n', RP)
@@ -58,19 +55,12 @@ wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
 margStd = 2.0/wMag
 print ('0-1 margin=2/|W|: ', margStd)
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-print ('b0: ',  b0)
-print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-print ('margin=(-b1-b0)/|W|: ', margB12)
-
 #0-2
 X[1] = NUMS[2]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -96,21 +86,12 @@ wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
 margStd = 2.0/wMag
 print ('0-2 margin=2/|W|: ', margStd)
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1) #margB12 != margStd:  1.1547005383792528 1.1547005383792512
-
 #1-2
 X[0] = NUMS[1]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -136,15 +117,6 @@ wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
 margStd = 2.0/wMag
 print ('1-2 margin=2/|W|: ', margStd)
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 #Classification by minimal margin:
 
 #test data:
@@ -156,10 +128,10 @@ NUMSt.shape = (digCnt, smpCnt)
 #0t-0
 X[0] = NUMSt[0]
 X[1] = NUMS[0]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -189,21 +161,12 @@ marg0t0 = margStd
 
 print ('0t-0 margin=2/|W|: ', margStd)
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 #0t-1
 X[1] = NUMS[1]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -231,21 +194,12 @@ print ('0t-1 margin=2/|W|: ', margStd)
 if margmin > margStd:
   margmin = margStd
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 #0t-2
 X[1] = NUMS[2]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -273,14 +227,6 @@ print ('0t-2 margin=2/|W|: ', margStd)
 if margmin > margStd:
   margmin = margStd
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
 
 if margmin != marg0t0:
   print ('margmin != marg0t0', margmin, marg0t0)
@@ -290,10 +236,10 @@ if margmin != marg0t0:
 #2t-0
 X[0] = NUMSt[2]
 X[1] = NUMS[0]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -321,21 +267,12 @@ margStd = 2.0/wMag
 print ('2t-0 margin=2/|W|: ', margStd)
 margmin = margStd
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 #2t-1
 X[1] = NUMS[1]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -363,21 +300,12 @@ print ('2t-1 margin=2/|W|: ', margStd)
 if margmin > margStd:
   margmin = margStd
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 #2t-2
 X[1] = NUMS[2]
-k00 = kern.dot (X[0], X[0])
-k01 = kern.dot (X[0], X[1])
-k10 = kern.dot (X[1], X[0])
-k11 = kern.dot (X[1], X[1])
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
 
 LP[1][0] = k00
 LP[1][1] = k10
@@ -402,23 +330,119 @@ print ('W:\n', W)
 wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
 margStd = 2.0/wMag
 marg2t2 = margStd
-margStd
+
 print ('2t-2 margin=2/|W|: ', margStd)
 if margmin > margStd:
   margmin = margStd
 
-b0 = - kern.dot (X[0], W)
-b1 = - kern.dot (X[1], W)
-#print ('b0: ',  b0)
-#print ('b1: ',  b1)
-margB12 = (-b1-b0)/wMag
-if abs (margB12 - margStd) > 0.00001:
-  print ('abs (margB12 - margStd) > 0.00001: ', margB12, margStd)
-  exit (1)
-
 if margmin != marg2t2:
   print ('margmin != marg2t2', margmin, marg2t2)
-  exit (1) #margmin != marg2t2 0.5345224838248488 1.4142135623730954 - 2t still close to 0!
+  exit (1) #OK
+
+#1t-0
+X[0] = NUMSt[1]
+X[1] = NUMS[0]
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
+
+LP[1][0] = k00
+LP[1][1] = k10
+LP[2][0] = k01
+LP[2][1] = k11
+
+#print ('LP:\n', LP)
+#print ('RP:\n', RP)
+ALB = np.linalg.solve (LP, RP)
+
+bsPrnImgTxt (X[0], 0, digSz)
+bsPrnImgTxt (X[1], 0, digSz)
+print ('ALB:\n', ALB)
+
+if not ( np.allclose (np.dot (LP, ALB), RP) ):
+  print ('No met: np.allclose (np.dot (LP, ALB), RP)')
+  exit (1)
+
+#W = sum(yi*ai*Xi)
+W = Y[0]*ALB[0]*X[0] + Y[1]*ALB[1]*X[1]
+print ('W:\n', W)
+wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
+margStd = 2.0/wMag
+
+print ('1t-0 margin=2/|W|: ', margStd)
+margmin = margStd
+
+#1t-1
+X[1] = NUMS[1]
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
+
+LP[1][0] = k00
+LP[1][1] = k10
+LP[2][0] = k01
+LP[2][1] = k11
+
+#print ('LP:\n', LP)
+#print ('RP:\n', RP)
+ALB = np.linalg.solve (LP, RP)
+
+bsPrnImgTxt (X[0], 0, digSz)
+bsPrnImgTxt (X[1], 0, digSz)
+print ('ALB:\n', ALB)
+
+if not ( np.allclose (np.dot (LP, ALB), RP) ):
+  print ('No met: np.allclose (np.dot (LP, ALB), RP)')
+  exit (1)
+
+#W = sum(yi*ai*Xi)
+W = Y[0]*ALB[0]*X[0] + Y[1]*ALB[1]*X[1]
+print ('W:\n', W)
+wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
+margStd = 2.0/wMag
+marg1t1 = margStd
+print ('1t-1 margin=2/|W|: ', margStd)
+if margmin > margStd:
+  margmin = margStd
+
+#2t-2
+X[1] = NUMS[2]
+k00 = Y[0] * kern.dot (X[0], X[0])
+k01 = Y[0] * kern.dot (X[0], X[1])
+k10 = Y[1] * kern.dot (X[1], X[0])
+k11 = Y[1] * kern.dot (X[1], X[1])
+
+LP[1][0] = k00
+LP[1][1] = k10
+LP[2][0] = k01
+LP[2][1] = k11
+
+#print ('LP:\n', LP)
+#print ('RP:\n', RP)
+ALB = np.linalg.solve (LP, RP)
+
+bsPrnImgTxt (X[0], 0, digSz)
+bsPrnImgTxt (X[1], 0, digSz)
+print ('ALB:\n', ALB)
+
+if not ( np.allclose (np.dot (LP, ALB), RP) ):
+  print ('No met: np.allclose (np.dot (LP, ALB), RP)')
+  exit (1)
+
+#W = sum(yi*ai*Xi)
+W = Y[0]*ALB[0]*X[0] + Y[1]*ALB[1]*X[1]
+print ('W:\n', W)
+wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
+margStd = 2.0/wMag
+print ('1t-2 margin=2/|W|: ', margStd)
+if margmin > margStd:
+  margmin = margStd
+
+if margmin != marg1t1:
+  print ('margmin != marg1t1', margmin, marg1t1)
+  exit (1)
 
 print ('Test OK!')
 
