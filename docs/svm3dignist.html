@@ -94,6 +94,7 @@ Accuracy = 94.2% (942/1000) (classification)
       </p>
       <h4>Classifying by solving linear system equation for 28x28 samples transformed into one 784D sample.</h4>
       <p><b>python/svm/nist/dig1000mitsvm.py</b> do this job. It's also slow, classifying each test sample against 9000 train samples takes around 10 sec for linear kernel.
+        Images was scaled to [0/1], i.e. pure black/white.
         Preliminary results for linear kernel:
       </p>
       <pre>
@@ -147,6 +148,14 @@ test digit, test index, minimum: train digit, train index, margin:  3 10 3 732 6
 #i.e. 3 of 10 wrong for first 10 of 3
       </pre>
       <p>So, preliminary results for linear kernel are very good! But it's too slow in comparing with LIBSVM.</p>
+      <p>At last, the report says: Accuracy = 93.5% (935 OK, 65 Wrong). That is really good for linear kernel,
+        and the fact that LIBSVM RBF (by default) gives 94.2% (only 0.7% better!).</p>
+
+      <h4>Conclusion.</h4>
+      <p>
+        Transforming an image into a single N-pixels size point and using the SVM's classification method (closest, i.e. minimum margin)
+        gives really impressive results, even without any addition additional transformation (i.e. using non-linear kernel).
+      </p>
       <p>
         References:
       </p>

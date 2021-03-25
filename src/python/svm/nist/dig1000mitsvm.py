@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # coding=UTF-8
-
-#finding alphas and the b by solving linear system equation according to MIT MIT6_034F10_tutor05.pdf page 6 (https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/)
-#author Yury Demidenko
+# BSD 2-Clause License
+# Copyright (c) 2021, Yury Demidenko (Beigesoft™)
+# All rights reserved.
+# See the LICENSE in the root source folder
+# Finding alphas and the b by solving linear system equation according to MIT MIT6_034F10_tutor05.pdf page 6 (https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/)
 
 #Classify NIST data - train (900 samples) and test (the rest 100) files
 #NIST data from http://www.cis.jhu.edu/~sachin/digit/digit.html 1000 28x28 digits (unsigned char 8bit): data0..data9
@@ -91,9 +93,8 @@ RP = np.array ([0.0, Y[0], Y[1]])
 
 for dTst in range (10):
 #  dTst = 4 #debug
-  it = 0
   for iTst in range (testCnt):
-    margminDigIdx = [sys.float_info.max, 0, 0] #minmarg, train dig, train dig idx
+    margminDigIdx = [sys.float_info.max, -1, 0] #minmarg, train dig, train dig idx
     for iPix in range (pixCnt):
       X[0][iPix] = NUMS[dTst][testOfst + iTst*pixCnt + iPix]
     for dTrn in range (10):
@@ -104,28 +105,37 @@ for dTst in range (10):
         LP[1][1] = Y[1] * kern.dot (X[1], X[0])
         LP[2][0] = Y[0] * kern.dot (X[0], X[1])
         LP[2][1] = Y[1] * kern.dot (X[1], X[1])
-        ALB = np.linalg.solve (LP, RP)
-        if not ( np.allclose (np.dot (LP, ALB), RP) ): #useless 2dots!
-          print ('No met: np.allclose (np.dot (LP, ALB), RP)')
-          exit (1)
-        W = Y[0]*ALB[0]*X[0] + Y[1]*ALB[1]*X[1]
-        wMag = np.linalg.norm (W)
-        marg = 2.0/wMag
-        if marg < margminDigIdx[0]:
-          margminDigIdx[0] = marg
-          margminDigIdx[1] = dTrn
-          margminDigIdx[2] = iTrn
-        if it < 2:
-          print ('test digit, test index, train digit, train index, margin: ', dTst, iTst, dTrn, iTrn, marg)
+        try:
+          ALB = np.linalg.solve (LP, RP)
+          if not ( np.allclose (np.dot (LP, ALB), RP) ): #useless 2dots!
+            print ('No met: np.allclose (np.dot (LP, ALB), RP)')
+          W = Y[0]*ALB[0]*X[0] + Y[1]*ALB[1]*X[1]
+          wMag = np.linalg.norm (W)
+          marg = 2.0/wMag
+          if marg < margminDigIdx[0]:
+            margminDigIdx[0] = marg
+            margminDigIdx[1] = dTrn
+            margminDigIdx[2] = iTrn
+        except:
+          #numpy.linalg.LinAlgError: Singular matrix - identical scaled digits - e.g. Error on dTst, iTst, dTrn, iTrn:  1 72 1 205
+          #TODO if singular, then absolutely matched i.e. stop iteration
+          print ('Error on dTst, iTst, dTrn, iTrn: ', dTst, iTst, dTrn, iTrn)
           print ('Digit test:')
           bsPrnImgTxt (X[0], 0, digSz)
           print ('Digit train:')
           bsPrnImgTxt (X[1], 0, digSz)
-          it += 1
+          print (sys.exc_info ()[0])
     if margminDigIdx[1] != dTst:
       wrongCnt += 1
-    PRED[dTst * testCnt + iTst] = margminDigIdx[1]
-    print ('test digit, test index, minimum: train digit, train index, margin: ', dTst, iTst, margminDigIdx[1], margminDigIdx[2], margminDigIdx[0])
+    if margminDigIdx[1] == -1:
+      print ('Can not classify dTst, iTst: ', dTst, iTst)
+    else:
+      PRED[dTst * testCnt + iTst] = margminDigIdx[1]
+      print ('test digit, test index, minimum: train digit, train index, margin: ', dTst, iTst, margminDigIdx[1], margminDigIdx[2], margminDigIdx[0])
+      print ('Digit test:')
+      bsPrnImgTxt (NUMS[dTst], testOfst + iTst*pixCnt, digSz)
+      print ('Digit train:')
+      bsPrnImgTxt (NUMS[margminDigIdx[1]], margminDigIdx[2]*pixCnt, digSz)
 
 
 ftest = open (pth+'/nist'+str(digCnt)+'x'+str(digSz)+'x'+str(digSz)+'t.mpred', 'w')

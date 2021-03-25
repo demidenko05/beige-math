@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+python3 test_2dMarg.py
 python3 test_2d1.py
 python3 test_2d2.py
 python3 test_2d3.py

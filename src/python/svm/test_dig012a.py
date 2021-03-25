@@ -55,6 +55,27 @@ wMag = np.linalg.norm (W) #np.sqrt(x.dot(x))
 margStd = 2.0/wMag
 print ('0-1 margin=2/|W|: ', margStd)
 
+#normalize W to [-1,1]:
+mx = sys.float_info.min
+for i in range (W.shape[0]):
+  wi = abs (W[i])
+  if wi > mx:
+    mx = wi
+nc = 1.0 / mx
+Wn = W.copy ()
+for i in range (Wn.shape[0]):
+  Wn[i] *= nc
+print ('Wn[-1:1]:', Wn)
+#wMagn = np.linalg.norm (W)
+wMagn = np.sqrt (np.dot (Wn, Wn))
+bX0 = - np.dot(X[0], Wn)
+bX1 = - np.dot(X[1], Wn)
+margn = (-bX0+bX1)/wMagn
+print ('wMagn, bX0, bX1, margn', wMagn, bX0, bX1, margn)
+#wMagn, bX0, bX1, margn 4.898979485566356 -16.0 8.0 4.898979485566357 vs 1.6329931618554523
+#but margn = abs(bX0+bX1)/wMagn = 8/4.898979485566356 = 1.632993162
+#i.e. wrong margin equation for normalized W?!
+
 #0-2
 X[1] = NUMS[2]
 k00 = Y[0] * kern.dot (X[0], X[0])
