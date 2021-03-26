@@ -1,4 +1,5 @@
 Beigesoft™ Math project.
+site: https://demidenko05.github.io/beige-math/
 
 This project consists of math programs (Python) and tutorials.
 The first sub-project is dedicated to understand, explain and try step by step SVM method.
