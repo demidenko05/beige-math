@@ -1,7 +1,11 @@
 Beigesoft™ Math project.
 
 This project consists of math programs (Python) and tutorials.
-The first sub-project is dedicated to understand, explain and try step by step SVM method for classifying (recognizing) and regressing (prediction) tasks.
+The first sub-project is dedicated to understand, explain and try step by step SVM method.
+Read it to know:
+What is Hyperplane and its shifting?
+How to use this method by rotating normalized coefficient vector in growing margin direction (without finding Lagrange multipliers).
+How to recognize hand-written digits by using NumPy.  
 
 ------------------------------------------
 licenses:

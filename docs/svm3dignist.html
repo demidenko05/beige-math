@@ -90,7 +90,8 @@ Accuracy = 94.2% (942/1000) (classification)
 </pre>
       <p>In the previous article we found that current algorithm "rotating coefficient vector" doesn't find global maximum in 64D.
         Also finding a margin by rotation the coefficient vector in 784D takes around 4 second, so currently it's not reliable for multi-classification between hundreds of samples.
-        Maybe it's possible to fix algorithm to find the global maximum in small time (minimum iteration).
+        Maybe it's possible to fix the rotating vector algorithm to find the global maximum in small time (minimum iteration).
+        This method id definitely simpler than finding Lagrange multipliers, and the current algorithm (see BsLibSvm.py) works fine for 2-3D samples. 
       </p>
       <h4>Classifying by solving linear system equation for 28x28 samples transformed into one 784D sample.</h4>
       <p><b>python/svm/nist/dig1000mitsvm.py</b> do this job. It's also slow, classifying each test sample against 9000 train samples takes around 10 sec for linear kernel.
@@ -154,7 +155,7 @@ test digit, test index, minimum: train digit, train index, margin:  3 10 3 732 6
       <h4>Conclusion.</h4>
       <p>
         Transforming an image into a single N-pixels size point and using the SVM's classification method (closest, i.e. minimum margin)
-        gives really impressive results, even without any addition additional transformation (i.e. using non-linear kernel).
+        gives really impressive results, even without any additional transformation (i.e. using non-linear kernel).
       </p>
       <p>
         References:

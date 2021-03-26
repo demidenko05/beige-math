@@ -74,7 +74,7 @@ margn = (-bX0+bX1)/wMagn
 print ('wMagn, bX0, bX1, margn', wMagn, bX0, bX1, margn)
 #wMagn, bX0, bX1, margn 4.898979485566356 -16.0 8.0 4.898979485566357 vs 1.6329931618554523
 #but margn = abs(bX0+bX1)/wMagn = 8/4.898979485566356 = 1.632993162
-#i.e. wrong margin equation for normalized W?!
+#i.e. wrong margin equation for normalized W?! TODO TODO TODO TODO TODO
 
 #0-2
 X[1] = NUMS[2]

@@ -107,8 +107,9 @@
       <p align="center"><img style="max-width: 100%" src="img/coefvec1.png" /></p>
       
       <h4>A SVM simplest example. Make it with your eyes.</h4>
+      <p>To avoid confusing about a sample index we will use C, Java and Python standard - index from 0 (zero).</p>
       <p>
-        Consider 4 samples in 2D - X1(0.5, 1.2), X2(1, 1) belong to class 1 (green) and X3(3, 3), X4(4, 3.3) belong to class 2 (blue):
+        Consider 4 samples in 2D - X0(0.5, 1.2), X1(1, 1) belong to class 1 (green) and X2(3, 3), X3(4, 3.3) belong to class 2 (blue):
       </p>
       <p align="center"><img style="max-width: 100%" src="img/svmsimple1.png" /></p>
       <p>You can find the separating hyperplane and the support vectors (the "widest road") by your eyes.
@@ -126,16 +127,16 @@
       </p>
       <p>
         <ul>
-          <li>X1\(\langle 0.5, 1.2 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2.3</li>
-          <li>X2\(\langle 1, 1 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2</li>
-          <li>X3\(\langle 3, 3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 2</li>
-          <li>X4\(\langle 4, 3.3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 3.3</li>
+          <li>X0\(\langle 0.5, 1.2 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2.3</li>
+          <li>X1\(\langle 1, 1 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = -2</li>
+          <li>X2\(\langle 3, 3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 2</li>
+          <li>X3\(\langle 4, 3.3 \rangle \) * \(\langle 1, 1 \rangle \) - 4 = 3.3</li>
         </ul>
       </p>
       <p>Here we little bit get into troubles. First, support vectors must have <b>bH1=b+1=-3 and bH2=b-1=-5</b>, but we get <b>bH1=b+2=-2 and bH2=b-2=-6</b>.
         Second, the margin must be \(2\over\|\overrightarrow{W}\|\), there 2 is difference between <b>bH2 and bH1</b>, that must be <b>2</b> according to all sources (also see MIT6_034F10_svm.pdf in <a href="#mitAI2010F">MIT-AI2010F</a>).
       </p>
-      <p>But if we push X2 and X3 farther by {+2,+2}, then the margin will be \(4*\|\overrightarrow{W}\|\) in this case.</p>
+      <p>But if we push X1 and X2 farther by {+2,+2}, then the margin will be \(4*\|\overrightarrow{W}\|\) in this case.</p>
       <p>Lets check \(-b\over\|\overrightarrow{W}\|\): <b>4 / 1.414213562 = 2.828427125</b>. Check it by Pythagorean Theorem: <b>sqrt(2*2+2*2)=2.828427125</b>.
         So, dividing a <b>b</b> (or part of it) on \(\|\overrightarrow{W}\|\) gives us length of hypotenuse here.
         So, margin is actually equals to:
@@ -155,7 +156,7 @@
       </p>
       <p align="center"><img style="max-width: 100%" src="img/calc.png" /></p>
       <p>See <b>src/python/svm/calc.py</b> that made this actually very simple job. See <b>svm/test_2d1.py</b> that automatically find coefficient vector by rotation.</p>
-      <p>Is it possible to find wrong maximum (local maximum/minimum problem) by this way? It's unclear, but in 64D automatic vector rotation by BsLibSvm find no global maximum. In 2-3D it works fine.</p>
+      <p>Is it possible to find wrong maximum (local maximum/minimum problem) by this way? It's unclear right now, but in 64D automatic vector rotation (by BsLibSvm) find no global maximum. In 2-3D it works fine, see the tests.</p>
 
       <h4>Classification.</h4>
       <p>To classify a sample in case of 2-classes you of course should use this equations:
@@ -241,7 +242,7 @@ margin=2/|W|:  2.828427124746192
 
       <h4>Conclusion</h4>
       <p>This is the simplest case, i.e. few linearly separable samples in 2D. But vector algebra works in the same way for dimension of any size.
-        So, using SVM with simplest vector algebra seems to be simple (than finding Lagrange multipliers), reliable and efficient for given case.
+        Using SVM with rotating coefficient vector seems to be simple (than finding Lagrange multipliers), reliable and efficient for given case.
       </p>
 
       <p>
