@@ -1,0 +1,3 @@
+#switch to local MathJax
+#find . -type f -name "*.html" -exec sed -i "s/<script id=\"MathJax-script\" async src=\"https:\/\/cdn\.jsdelivr\.net\/npm\/mathjax\@3\/es5\/tex-chtml\.js\"><\/script>/<script type=\"text\/javascript\" src=\"\/usr\/share\/javascript\/mathjax\/MathJax\.js?config=TeX-AMS-MML_HTMLorMML\"><\/script>/g" {} +
+find . -type f -name "*.html" -exec sed -i "s/<script id=\"MathJax-script\" src=\"https:\/\/cdn\.jsdelivr\.net\/npm\/mathjax\@3\/es5\/tex-chtml\.js\"><\/script>/<script type=\"text\/javascript\" src=\"\/usr\/share\/javascript\/mathjax\/MathJax\.js?config=TeX-AMS-MML_HTMLorMML\"><\/script>/g" {} +

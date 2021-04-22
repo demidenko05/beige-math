@@ -22,6 +22,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Articles</a>
               <ul class="dropdown-menu" aria-labelledby="dropdown01">
                 <li><a class="dropdown-item" href="svmidx.html">Understanding Support Vector Machines.</a></li>
+                <li><a class="dropdown-item" href="spam-detect.html">Detecting spam in SMS unlabeled data.</a></li>
               </ul>
             </li>
             <li class="nav-item dropdown">
@@ -45,8 +46,10 @@
     <div>
       <h2>Beigesoft™ Math projects overview.</h2>
       
-      <p><b>Keywords: Python for science, PyNum, PySci, Support vector machines.</b></p>
-      
+      <p><b>Keywords: Python for science, NumPy, SciPy, Support vector machines.</b></p>
+
+      <p>This project never duplicate information from existing top level (that give you search engines) sources.
+        It supplements existing projects (references them), explains things in an any degree over way, introduces new ones.</p>
       
       <h3>Английский как основной язык наук.</h3>
       <p>Английский язык давно уже стал интернациональным языком для наук.
@@ -91,6 +94,32 @@
         In this example, in contrast to Python2, Python3 acts in an ambiguous way, i.e. it treats <b>3 / 2</b> as floats instead of integers,
         so you must use exactly <b>//</b> for integers.
       </p>
+      <p>If you want (actually must) to make a tests suite, then you probably end up with "test.support is not a public module. It is documented here to help Python developers write tests...".
+        In Java JUNIT makes all that you need. In Python it's not too clear which testing library is the choice.
+        So, using ordinary BASH (git-bash available on MS Windows) seems to be a reliable testing/installing tool (similar to Make in C).
+      </p>
+      <p>Python isn't type-safe at all. For example, you make an Array variable, then assign a scalar to it - Python never blame about it.
+        In Java it will be an error. In C it will be a compiler's error or warning about assigning wrong pointer type.
+        In addition in Java SpotBug and other tools detect many errors automatically.
+        But pychecker and pylint seems to be useless for it, e.g.:
+<pre>
+import numpy as np
+X = np.array([[.5, 1.2], [1., 1.], [3., 3.], [4., 3.3]])
+print(X)
+X = 1
+print(X)
+</pre>
+        Python runs this program without any blame.
+        Both pychecker and pylint will not blame about wrong type assigning.
+      </p>
+      <p>But for mathematicians that make final non-big programs (not libraries) those disadvantages matter nothing.
+        But they appreciate a very good Python feature - Jupiter Notebook - i.e. ability to publish programs in WEB.
+        In opposite to Java Applets, this is a server side technology, that automatically means:
+        <ul>
+          <li>Servers are much more powerful than client's computers</li>
+          <li>It's much more safe for clients, because a program runs remotely (of course except JavaScript).</li>
+        </ul>
+      </p>
 
       <h3><a href="svmidx.html">Understanding Support Vector Machines.</a></h3>
       <p>This project is intended to understand, explain and try step by step SVM method.
@@ -98,12 +127,26 @@
         <ul>
           <li>What is Hyperplane and its shifting?</li>
           <li>How to use this method by rotating normalized coefficient vector in growing margin direction (without finding Lagrange multipliers).</li>
-          <li>How to recognize hand-written digits by using NumPy.</li>
+          <li>How to recognize hand-written digits by using only NumPy.</li>
         </ul>
       </p>
 
+      <h3><a href="spam-detect.html">Detecting spam in SMS unlabeled data.</a></h3>
+      <p>This is about data mining (extracting information) from data without a classifying model (that trained on labeled train data).
+        For example 5 messages:
+<pre>
+"XXXMobileMovieClub: To use your credit, click the WAP link in the next txt message or click here>> http://wap. xxxmobilemovieclub.com?n=QJKGIGHJJGCBL"
+Oh k...i'm watching here:)
+Eh u remember how 2 spell his name... Yes i did. He v naughty make until i v wet.
+Fine if thatåÕs the way u feel. ThatåÕs the way its gota b
+"England v Macedonia - dont miss the goals/team news. Txt ur national team to 87077 eg ENGLAND to 87077 Try:WALES, SCOTLAND 4txt/Ì¼1.20 POBOXox36504W45WQ 16+"
+</pre>
+        You can detect yourself that the first and the last messages look like spam.
+        But can Math do this?
+      </p>
+
       <p>
-        Plots(graphs) are made by Matplotlib, and source code (Python) are included.
+        <b>* Plots(graphs) are made by Matplotlib, and source code (Python) are included.</b>
       </p>
       <p>
         Source code of this project: <a href="https://github.com/demidenko05/beige-math">https://github.com/demidenko05/beige-math</a>

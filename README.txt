@@ -6,7 +6,7 @@ The first sub-project is dedicated to understand, explain and try step by step S
 Read it to know:
 What is Hyperplane and its shifting?
 How to use this method by rotating normalized coefficient vector in growing margin direction (without finding Lagrange multipliers).
-How to recognize hand-written digits by using NumPy.  
+How to recognize hand-written digits by using NumPy only.  
 
 ------------------------------------------
 licenses:

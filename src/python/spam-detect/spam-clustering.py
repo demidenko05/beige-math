@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+# coding=UTF-8
+
+# BSD 2-Clause License
+# Copyright (c) 2021, Yury Demidenko (Beigesoft™)
+# All rights reserved.
+# See the LICENSE in the root source folder
+
+# This application tries to separate spam and ham messages by using clustering, i.e. classify unlabeled data
+
+# based on scikit-learn examples
+
+# based on href="https://github.com/ksdkamesh99/Spam-Classifier
+# see that project to make sure that:
+# phrase "morefrmmob" stays unseparated by all methods 
+# sentence "ye gauti sehwag odi seri" becames "yes gauti sehwag odi series" by lemmatiziers (probably wrong fixing), although they did not fix "u know" to "you know"
+
+#dataset - https://www.kaggle.com/uciml/sms-spam-collection-dataset/download
+
+#pass spam.csv full path as argument
+
+import sys
+import csv
+import re
+import numpy as np
+from time import time
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import KMeans
+from sklearn import metrics
+
+ip = 0
+pth = 'spam.csv'
+for arg in sys.argv:
+  if ip == 1:
+    pth = arg
+  ip += 1
+
+dtSet = []
+lbSet = []
+#making dataset during reading CSV is more efficient way (takes less memory)
+hsColNms = True
+with open (pth, newline='', encoding="iso-8859-1") as csvFl:
+  csvRdr = csv.reader (csvFl, delimiter=',', quotechar='"')
+  isFst = hsColNms
+  for row in csvRdr:
+    if isFst: #skip column names
+      isFst = False
+      continue
+    snts = re.sub ('[^A-Za-z]', ' ', row[1])
+    snts = snts.lower ()
+    wrds = word_tokenize (snts)
+    snts = ' '.join (wrds)
+    dtSet.append (snts)
+    if row[0] == 'ham':
+      lbSet.append (0)
+    else:
+      lbSet.append (1)
+
+#print (lbSet)
+#print (dtSet)
+
+numCls = np.unique (lbSet).shape[0]
+t0 = time ()
+vctrzr = TfidfVectorizer (max_features=10000)  
+print ("Extracting features from the training dataset using ", vctrzr)
+X = vctrzr.fit_transform (dtSet)
+print ("done in %fs" % (time() - t0))
+print ("n_samples: %d, n_features: %d\n" % X.shape)
+
+km = KMeans (n_clusters=numCls, init='k-means++', max_iter=100, n_init=1)
+print ("Clustering sparse data with %s" % km)
+t0 = time ()
+km.fit (X)
+print ("done in %0.3fs\n" % (time () - t0))
+
+#check results:
+  #from scikit-learn source code:
+print ("Homogeneity: %0.3f" % metrics.homogeneity_score (lbSet, km.labels_))
+print ("Completeness: %0.3f" % metrics.completeness_score (lbSet, km.labels_))
+print ("V-measure: %0.3f" % metrics.v_measure_score (lbSet, km.labels_))
+print ("Adjusted Rand-Index: %.3f"
+       % metrics.adjusted_rand_score (lbSet, km.labels_))
+print ("Silhouette Coefficient: %0.3f\n"
+       % metrics.silhouette_score (X, km.labels_, sample_size=1000))
+
+print ("Top terms per cluster:")
+order_centroids = km.cluster_centers_.argsort ()[:, ::-1]
+terms = vctrzr.get_feature_names ()
+
+for i in range (numCls):
+  print (" Cluster %d:" % i, end='')
+  for ind in order_centroids[i, :10]:
+    print (' %s' % terms[ind], end='')
+  print ()
+
+  #standard checking:
+fstCnt = 100
+print ('First %d label source-cluster:' % fstCnt)
+for i in range (fstCnt):
+  print (lbSet[i], '-', km.labels_[i], end='; ')
+wrng = 0;
+tot = X.shape[0]
+for i in range (tot):
+  if lbSet[i] != km.labels_[i]:
+    wrng += 1
+#TODO depending of previous KMEAN's labels results wrng inverses (e.g Homogeneity > 0.3?)!
+accur = (tot - wrng) / tot * 100.0
+print ('\nAccuracy = ', accur)
