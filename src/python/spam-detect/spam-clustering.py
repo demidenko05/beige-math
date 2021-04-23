@@ -68,10 +68,10 @@ X = vctrzr.fit_transform (dtSet)
 print ("done in %fs" % (time() - t0))
 print ("n_samples: %d, n_features: %d\n" % X.shape)
 
-km = KMeans (n_clusters=numCls, init='k-means++', max_iter=100, n_init=1)
+km = KMeans (n_clusters=numCls)
 print ("Clustering sparse data with %s" % km)
 t0 = time ()
-km.fit (X)
+predLbs = km.fit_predict (X)
 print ("done in %0.3fs\n" % (time () - t0))
 
 #check results:
@@ -84,26 +84,29 @@ print ("Adjusted Rand-Index: %.3f"
 print ("Silhouette Coefficient: %0.3f\n"
        % metrics.silhouette_score (X, km.labels_, sample_size=1000))
 
-print ("Top terms per cluster:")
+trmCnt = 20
+print ("Top %d terms per cluster:" % trmCnt)
 order_centroids = km.cluster_centers_.argsort ()[:, ::-1]
 terms = vctrzr.get_feature_names ()
 
 for i in range (numCls):
   print (" Cluster %d:" % i, end='')
-  for ind in order_centroids[i, :10]:
+  for ind in order_centroids[i, :trmCnt]:
     print (' %s' % terms[ind], end='')
   print ()
 
   #standard checking:
 fstCnt = 100
-print ('First %d label source-cluster:' % fstCnt)
+print ('First %d labels source-cluster:' % fstCnt)
+#kmlbs = km.labels_
+kmlbs = predLbs
 for i in range (fstCnt):
-  print (lbSet[i], '-', km.labels_[i], end='; ')
+  print (lbSet[i], '-', kmlbs[i], end='; ')
 wrng = 0;
 tot = X.shape[0]
 for i in range (tot):
-  if lbSet[i] != km.labels_[i]:
+  if lbSet[i] != kmlbs[i]:
     wrng += 1
 #TODO depending of previous KMEAN's labels results wrng inverses (e.g Homogeneity > 0.3?)!
 accur = (tot - wrng) / tot * 100.0
-print ('\nAccuracy = ', accur)
+print ('\nAccuracy = ' + str (accur) + '%')

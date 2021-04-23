@@ -57,6 +57,9 @@ Fine if thatåÕs the way u feel. ThatåÕs the way its gota b
 </pre>
         You can detect yourself that the first and the last messages look like spam.
         But can Math do this?
+        An ordinary expert system can do this job probably very well.
+        But they say, that Math can retrieve information from source data that you can't notice neither at first look nor after a week of thoroughly study it.
+        So, this is the first simplest data-set to start. 
       </p>
 
       <p>This is about data mining (extracting information) from data without a classifying model (that trained on labeled train data).
@@ -102,7 +105,30 @@ Cluster 1: sandvik keith com sgi livesey kent apple morality caltech objective
 Cluster 2: space nasa access digex henry gov pat shuttle toronto alaska
 Cluster 3: god com people don just article jesus think like know
 </pre>
-        So, it's definitely more complex than previous article (Support Vector Machines), that gives the same result for any invocation. 
+        So, it's definitely more complex than previous article (Support Vector Machines), that gives the same result for any invocation.
+        At first invocation category "space" seems to be divided into clusters #0 and #1, and "Atheism" and "Religion" seems to be merged into cluster #2.
+        But why results are different? Maybe changing position of a word inside top terms means that neighboring words have the same frequency?
+      </p>
+      <p>
+        The API says:
+        <p><i>
+        In practice, the k-means algorithm is very fast (one of the fastest clustering algorithms available), but it falls in local minima. That’s why it can be useful to restart it several times.
+        </i></p>
+        Using default settings (n_init - default=10 and max_iter - default=300) gives more stable results for SMS task, but it's more slowly:
+<pre>
+Homogeneity: 0.000
+Completeness: 0.000
+V-measure: 0.000
+Adjusted Rand-Index: 0.003
+Silhouette Coefficient: 0.005
+
+Top 20 terms per cluster:
+ Cluster 0: to the is in ok it my me and now for call your of on not ur that no at
+ Cluster 1: you to are and me the have do call in your that how when can for what my it know
+First 100 labels source-cluster:
+0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 1; 1 - 0; 0 - 0; 1 - 0; 1 - 1; 0 - 1; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 1; 1 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 1 - 1; 0 - 1; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 1 - 0; 0 - 1; 1 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 1 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 
+Accuracy = 68.12634601579325%
+</pre>
       </p>
       
       <p>References:</p>
