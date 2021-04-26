@@ -56,7 +56,7 @@ Fine if thatåÕs the way u feel. ThatåÕs the way its gota b
 "England v Macedonia - dont miss the goals/team news. Txt ur national team to 87077 eg ENGLAND to 87077 Try:WALES, SCOTLAND 4txt/Ì¼1.20 POBOXox36504W45WQ 16+"
 </pre>
         You can detect yourself that the first and the last messages look like spam.
-        But can Math do this?
+        But can Math do this enough well?
         An ordinary expert system can do this job probably very well.
         But they say, that Math can retrieve information from source data that you can't notice neither at first look nor after a week of thoroughly study it.
         So, this is the first simplest data-set to start. 
@@ -129,14 +129,36 @@ First 100 labels source-cluster:
 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 1; 1 - 0; 0 - 0; 1 - 0; 1 - 1; 0 - 1; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 1; 1 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 1 - 1; 0 - 1; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 1; 1 - 0; 0 - 1; 1 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 1 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 
 Accuracy = 68.12634601579325%
 </pre>
+        Sometimes cluster's labels are changed (inverted), so 32% means 68%.
+      </p>
+      <p><a href="#KSDKAMESH99">Spam classifier</a> gives 98.47% accuracy for SVM linear, 4457 train samples (5572 total), 1115 test samples (145 spam in them, 14 from them are wrong, i.e. Accuracy spam = 90.35%), PorterStemmer and sklearn.feature_extraction.text.CountVectorizer.
+        If SVM (that is trained on these labeled data) can separate these samples so well, then it should be a Math method to train and separate the unlabeled ones enough well (70% isn't good).
+        Indeed, for those processors the result is better (<b>src/python/spam-detect/spam-clustering1.py</b>):
+<pre>
+Homogeneity: 0.169
+Completeness: 0.193
+V-measure: 0.180
+Adjusted Rand-Index: 0.367
+Silhouette Coefficient: 0.090
+
+Top 20 terms per cluster:
+ Cluster 0: go get ur gt lt come ok day know love like got good time want send text need free txt
+ Cluster 1: call free mobil claim min prize pleas contact urgent later award phone sorri ppm text custom number servic cash guarante
+
+First 100 labels source-cluster:
+0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 1; 1 - 1; 0 - 0; 1 - 0; 1 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 0; 0 - 0; 1 - 1; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 1; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 1 - 1; 0 - 0; 1 - 0; 0 - 0; 0 - 0; 0 - 0; 0 - 0; 
+Accuracy total = 87.86791098348887%
+Spam total = 747 Accuracy spam = 45.64926372155288%
+</pre>
+        But accuracy for exactly SPAM messages (747 from 5572 total) is not good.
       </p>
       
       <p>References:</p>
       <ol>
         <li><a name="SCIKIT-PREPARE" href="https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing">https://scikit-learn.org/stable/modules/preprocessing.html#preprocessing</a></li>
         <li><a name="SCIKIT-USL" href="https://scikit-learn.org/stable/unsupervised_learning.html">https://scikit-learn.org/stable/unsupervised_learning.html</a></li>
-        <li><a name="SCIKIT-CLSTXT" href="https://scikit-learn.org/stable/auto_examples/text/plot_document_clustering.html#sphx-glr-auto-examples-text-plot-document-clustering-py">Clustering text documents using k-means</a></li>
-        <li><a name="KSDKAMESH99" href="https://github.com/ksdkamesh99/Spam-Classifier">https://github.com/ksdkamesh99/Spam-Classifier</a></li>
+        <li><a name="SCIKIT-CLSTXT" href="https://scikit-learn.org/stable/auto_examples/text/plot_document_clustering.html#sphx-glr-auto-examples-text-plot-document-clustering-py">scikit-learn: Clustering text documents using k-means</a></li>
+        <li><a name="KSDKAMESH99" href="https://github.com/ksdkamesh99/Spam-Classifier">https://github.com/ksdkamesh99/Spam-Classifier by Kota Sai Durga Kamesh (MIT License)</a></li>
         <li><a name="KAGGLE-SMS" href="https://www.kaggle.com/uciml/sms-spam-collection-dataset/download">SMS Spam Dataset created by UCI Machine Learning</a></li>
       </ol>
     </div>

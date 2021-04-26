@@ -22,11 +22,13 @@
 import sys
 import csv
 import re
-import numpy as np
 from time import time
+import numpy as np
 import nltk
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.cluster import KMeans
 from sklearn import metrics
 
@@ -38,6 +40,10 @@ for arg in sys.argv:
   ip += 1
 
 nltk.download ('punkt') #tokenizer
+nltk.download ('stopwords')
+set (stopwords.words ('english'))
+prtStm = PorterStemmer ()
+
 dtSet = []
 lbSet = []
 #making dataset during reading CSV is more efficient way (takes less memory)
@@ -52,7 +58,8 @@ with open (pth, newline='', encoding="iso-8859-1") as csvFl:
     snts = re.sub ('[^A-Za-z]', ' ', row[1])
     snts = snts.lower ()
     wrds = word_tokenize (snts)
-    snts = ' '.join (wrds)
+    wrdsPs = [prtStm.stem (i) for i in wrds if i not in stopwords.words ('english')]
+    snts = ' '.join (wrdsPs)
     dtSet.append (snts)
     if row[0] == 'ham':
       lbSet.append (0)
@@ -66,7 +73,7 @@ for i in range (fstCnt):
 
 numCls = np.unique (lbSet).shape[0]
 t0 = time ()
-vctrzr = TfidfVectorizer (max_features=10000)  
+vctrzr = CountVectorizer (max_features=10000)  
 print ("Extracting features from the training dataset using ", vctrzr)
 X = vctrzr.fit_transform (dtSet)
 print ("done in %fs" % (time() - t0))
@@ -106,10 +113,18 @@ kmlbs = predLbs
 for i in range (fstCnt):
   print (lbSet[i], '-', kmlbs[i], end='; ')
 wrng = 0;
+wrngSpm = 0;
+totSpm = 0;
 tot = X.shape[0]
 for i in range (tot):
+  if lbSet[i] == 1:
+    totSpm += 1
+    if lbSet[i] != kmlbs[i]:
+      wrngSpm += 1
   if lbSet[i] != kmlbs[i]:
     wrng += 1
 #TODO depending of previous KMEAN's labels results wrng inverses (e.g Homogeneity > 0.3?)!
 accur = (tot - wrng) / tot * 100.0
-print ('\nAccuracy = ' + str (accur) + '%')
+accurSpm = (totSpm - wrngSpm) / totSpm * 100.0
+print ('\nAccuracy total = ' + str (accur) + '%')
+print ('\nSpam total = ' + str (totSpm) + ' Accuracy spam = ' + str (accurSpm) + '%')
